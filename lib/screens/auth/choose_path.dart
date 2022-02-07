@@ -1,3 +1,4 @@
+import 'package:dash_user2/screens/auth/register_screen.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:dash_user2/utils/custom_sized_box.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class ChoosePath extends StatelessWidget {
             Container(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: 60.0, right: 60.0, top: 20, bottom: 128),
+                    left: 60.0, right: 60.0, top: 20, bottom: 110),
                 child: Text(
                   "Have food, drinks, groceries and more delivered fast",
                   textAlign: TextAlign.center,
@@ -88,15 +89,65 @@ class ChoosePath extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  // Navigator.of(context)
-                  //     .push(MaterialPageRoute(builder: (context) {
-                  //   return LoginScreen();
-                  // }));
+                  Navigator.of(context).pushNamed(RegisterScreen.routeName);
                 },
               ),
             ),
             CustomSizedBox(
-              height: 50,
+              height: 20,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 18.0, right: 8.0),
+                    child: Divider(
+                      color: Constants.grey_color,
+                      thickness: 1.0,
+                    ),
+                  ),
+                ),
+                Text(
+                  "or",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Constants.grey_color,
+                    fontFamily: 'EuclidCircularB',
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 8.0, right: 18.0),
+                    child: Divider(
+                      color: Constants.grey_color,
+                      thickness: 1.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              height: 52.0,
+              margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
+              width: size.width,
+              child: Center(
+                child: InkWell(
+                  child: Text(
+                    "Continue as Guest",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Constants.grey_color,
+                      fontFamily: 'EuclidCircularB',
+                    ),
+                  ),
+                  onTap: () {
+                    // Navigator.of(context)
+                    //     .push(MaterialPageRoute(builder: (context) {
+                    //   return LoginScreen();
+                    // }));
+                  },
+                ),
+              ),
             ),
           ],
         ),

@@ -33,8 +33,8 @@ class CartProvider with ChangeNotifier {
     return total;
   }
 
-  Future<bool> addToCart(String title, String itemId,
-      String imageUrl, double price, int quantity) async {
+  Future<bool> addToCart(String title, String itemId, String imageUrl,
+      double price, int quantity) async {
     if (_cartList.containsKey(itemId)) {
       _cartList.update(
         itemId,
@@ -43,7 +43,7 @@ class CartProvider with ChangeNotifier {
           title: value.title,
           imageUrl: value.imageUrl,
           price: value.price,
-          quantity: value.quantity,
+          quantity: value.quantity + 1,
           itemId: value.itemId,
         ),
       );
@@ -64,28 +64,29 @@ class CartProvider with ChangeNotifier {
       );
     }
     notifyListeners();
-      print("respose from map print ${_cartList}");
+    print("respose from map print ${_cartList}");
 
     return true;
   }
 
-  void decrementCartProductQuantity(
-    String pId,
-    String title,
-    String itemId,
-    String imageUrl,
-    double price,
-  ) {
-    if (_cartList.containsKey(pId)) {
+  void decrementCartProductQuantity({
+    String? cartId,
+    required String itemId,
+    String? title,
+    int? quantity,
+    String? imageUrl,
+    double? price,
+  }) {
+    if (_cartList.containsKey(itemId)) {
       _cartList.update(
-        pId,
+        itemId,
         (value) => Cart(
           cartId: value.cartId,
+          itemId: itemId,
           title: value.title,
+          quantity: value.quantity - 1,
           imageUrl: value.imageUrl,
           price: value.price,
-          quantity: value.quantity - 1,
-          itemId: itemId,
         ),
       );
     }

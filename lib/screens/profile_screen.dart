@@ -1,6 +1,7 @@
 import 'package:dash_user2/utils/custom_sized_box.dart';
 import 'package:dash_user2/utils/user_list_tile.dart';
 import 'package:dash_user2/widgets/profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -67,6 +68,17 @@ class ProfileScreen extends StatelessWidget {
               tIcon: Icons.arrow_forward_ios,
               tIconCallback: () {},
               onTap: () {},
+            ),
+            UserListTile(
+              title: 'Logout',
+              tIcon: Icons.power_settings_new,
+              tIconCallback: () {
+                Navigator.canPop(context) ? Navigator.pop(context) : null;
+              },
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.canPop(context) ? Navigator.pop(context) : null;
+              },
             ),
           ],
         ),

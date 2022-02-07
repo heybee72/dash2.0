@@ -54,9 +54,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
           color: Constants.secondary_color,
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           // onPressed: _loading ? () {} : () async => await _addToCart(),
-          onPressed: () { 
+          onPressed: () {
             cartProvider
-                .addToCart( title, itemId, image, subTotal, _quantity)
+                .addToCart(title, itemId, image, subTotal, _quantity)
                 .then((value) {
               if (value) {
                 // print("added");
@@ -237,13 +237,16 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     children: [
                       InkWell(
                         borderRadius: BorderRadius.circular(180),
-                        onTap: _quantity > 1
+                        onTap: cartAttribute.quantity < 2
                             ? () {
                                 setState(() {
                                   _quantity--;
                                 });
                               }
-                            : null,
+                            : () {
+                                cartProvider.decrementCartProductQuantity(
+                                    itemId: itemId);
+                              },
                         child: Container(
                           width: 52.0,
                           height: 52.0,

@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_user2/screens/auth/login_screen.dart';
+import 'package:dash_user2/services/global_methods.dart';
 import 'package:dash_user2/utils/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -21,17 +25,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isVisible = true;
   bool _loading = false;
 
-  void _submitData() {
-    setState(() {
-      _loading = !_loading;
-    });
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  GlobalMethods _globalMethods = GlobalMethods();
+
+  void _submitData() async {
     final _isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
+    var date = DateTime.now().toString();
+    var parsedDate = DateTime.parse(date);
+    var formattedDate =
+        '${parsedDate.day}/${parsedDate.month}/${parsedDate.year}';
     if (_isValid) {
-      _formKey.currentState!.save();
-    } else {
       setState(() {
-        _loading = !_loading;
+        _loading = true;
+      });
+      _formKey.currentState!.save();
+    }
+    try {
+      await _auth.createUserWithEmailAndPassword(
+          email: _email.toLowerCase().trim(), password: _password.trim());
+      // .then((value) =>
+      //     Navigator.canPop(context) ? Navigator.pop(context) : null);
+      final User user = _auth.currentUser!;
+      final _uid = user.uid;
+      FirebaseFirestore.instance.collection('users').doc(_uid).set({
+        'id': _uid,
+        'firstName': _firstName.trim(),
+        'lastName': _lastName.trim(),
+        'email': _email.toLowerCase().trim(),
+        'phone': _phone.trim(),
+        'joinedDate': formattedDate,
+        'createdAt': Timestamp.now(),
+      });
+      Navigator.canPop(context) ? Navigator.pop(context) : null;
+    } catch (e) {
+      _globalMethods.authDialog(context, e.toString());
+    } finally {
+      setState(() {
+        _loading = false;
       });
     }
   }
@@ -68,14 +99,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Expanded(
                           child: TextFormField(
                             onSaved: (value) {
-                              _email = value!;
+                              _firstName = value!;
                             },
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () =>
                                 FocusScope.of(context).requestFocus(
                               _passwordFocusNode,
                             ),
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType: TextInputType.text,
                             key: ValueKey('first_name'),
                             decoration: InputDecoration(
                               hintText: 'First name',
@@ -106,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Expanded(
                           child: TextFormField(
                             onSaved: (value) {
-                              _email = value!;
+                              _lastName = value!;
                             },
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () =>
@@ -178,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(height: 20),
                     TextFormField(
                       onSaved: (value) {
-                        _email = value!;
+                        _phone = value!;
                       },
                       textInputAction: TextInputAction.next,
                       onEditingComplete: () =>

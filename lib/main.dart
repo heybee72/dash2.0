@@ -11,6 +11,7 @@ import 'package:dash_user2/screens/profile_screen.dart';
 import 'package:dash_user2/screens/search_screen.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:dash_user2/widgets/profile.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,14 +20,16 @@ import 'models&providers/cart.dart';
 import 'models&providers/item_category.dart';
 import 'models&providers/items.dart';
 import 'models&providers/store.dart';
+import 'screens/auth/auth_stream.dart';
 import 'screens/auth/choose_path.dart';
 import 'screens/bottom_nav_screen.dart';
 import 'screens/innerScreens/choose_category.dart';
 import 'screens/innerScreens/item_details_screen.dart';
 import 'screens/landing_screen.dart';
 
-void main() {
+Future<void> main()async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -63,7 +66,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           title: 'Dash',
-          home: ChooseCategory(),
+          home: AuthStateScreen(),
           routes: {
             LandingScreen.routeName: (ctx) => LandingScreen(),
             ChoosePath.routeName: (ctx) => ChoosePath(),
@@ -78,7 +81,7 @@ class MyApp extends StatelessWidget {
             BottomNavScreen.routeName: (ctx) => BottomNavScreen(),
             HomeScreen.routeName: (ctx) => HomeScreen(),
             SearchScreen.routeName: (ctx) => SearchScreen(),
-            OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            OrdersScreen.routeName: (ctx) => OrdersScreen(index: 0),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
             Profile.routeName: (ctx) => Profile(),
             CartScreen.routeName: (ctx) => CartScreen(),

@@ -29,4 +29,25 @@ class GlobalMethods {
       },
     );
   }
+
+  Future<void> authDialog(BuildContext context, String subTitle) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error Occured'),
+          content: Text(subTitle),
+          actions: <Widget>[
+           
+            TextButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

@@ -54,7 +54,12 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
     Size size = MediaQuery.of(context).size;
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        bool willLeave = false;
+        await globalMethods.showDialogue(
+            context, () => cartProvider.clearCart());
+        return willLeave;
+      },
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,

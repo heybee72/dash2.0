@@ -1,6 +1,8 @@
 import 'package:dash_user2/screens/auth/forgot_password_screen.dart';
 import 'package:dash_user2/screens/auth/register_screen.dart';
+import 'package:dash_user2/services/global_methods.dart';
 import 'package:dash_user2/utils/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,11 +21,30 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isVisible = true;
   bool _loading = false;
 
-  void _submitData() {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  GlobalMethods _globalMethods = GlobalMethods();
+
+  void _submitData() async {
     final _isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
     if (_isValid) {
+      setState(() {
+        _loading = true;
+      });
       _formKey.currentState!.save();
+    }
+    try {
+      await _auth
+          .signInWithEmailAndPassword(
+              email: _email.toLowerCase().trim(), password: _password)
+          .then((value) =>
+              Navigator.canPop(context) ? Navigator.pop(context) : null);
+    } catch (e) {
+      _globalMethods.authDialog(context, e.toString());
+    } finally {
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
@@ -135,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context)
-                              .pushNamed(ForgotPasswordScreen.routeName);
+                                .pushNamed(ForgotPasswordScreen.routeName);
                           },
                           child: Padding(
                             padding:
@@ -182,9 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                         onPressed: () {
-                          setState(() {
-                            _loading = !_loading;
-                          });
+                          _submitData();
                           // Navigator.of(context)
                           //     .pushNamed(LoginScreen.routeName);
                         },
