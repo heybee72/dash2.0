@@ -1,5 +1,6 @@
 import 'package:dash_user2/models&providers/cart.dart';
 import 'package:dash_user2/services/global_methods.dart';
+import 'package:dash_user2/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -55,21 +56,121 @@ class CartScreen extends StatelessWidget {
             margin: EdgeInsets.all(0),
             child: Padding(
               padding: const EdgeInsets.all(3.0),
-              child: ListTile(
-                leading: Text("2 X"),
-                title: Text(
-                  "5-in-1 Meal (Zinger Wing)",
-                  style: TextStyle(
-                    color: Color(0xF7777777),
-                    fontSize: 13,
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Text('2X'),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "5-in-1 Meal (Zinger Wing)",
+                          style: TextStyle(
+                            color: Color(0xFF142328),
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Text("N2,500"),
                   ),
-                ),
-                trailing:Text("N2,500"),
-
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Text('2X'),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "5-in-1 Meal (Zinger Wing)",
+                          style: TextStyle(
+                            color: Color(0xFF142328),
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Text("N2,500"),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Service fee",
+                      style: TextStyle(
+                        color: Color(0xFF142328),
+                        fontSize: 15,
+                      ),
+                    ),
+                    trailing: Text("N2,500"),
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Delivery",
+                      style: TextStyle(
+                        color: Color(0xFF142328),
+                        fontSize: 15,
+                      ),
+                    ),
+                    trailing: Text("N2,500"),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Total",
+                      style: TextStyle(
+                        color: Color(0xFF142328),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: Text(
+                      "N2,500",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
             ),
           )
         ],
+      ),
+      bottomNavigationBar: Container(
+        height:60,
+        child: RaisedButton(
+          onPressed: () {},
+          color: Constants.secondary_color,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Proceed to Checkout",
+                style: TextStyle(color: Colors.white),
+              ),
+              Text("N, 6250", style: TextStyle(color: Colors.white)),
+            ],
+          ),
+        ),
       ),
     );
   }
