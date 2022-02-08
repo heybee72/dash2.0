@@ -1,3 +1,4 @@
+import 'package:dash_user2/errand/screen2.dart';
 import 'package:dash_user2/screens/auth/forgot_password_screen.dart';
 import 'package:dash_user2/screens/auth/login_screen.dart';
 import 'package:dash_user2/screens/auth/register_screen.dart';
@@ -16,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'dataHandler/appData.dart';
+import 'errand/screen1.dart';
+import 'errand/screen3.dart';
 import 'models&providers/cart.dart';
 import 'models&providers/item_category.dart';
 import 'models&providers/items.dart';
@@ -66,7 +69,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           title: 'Dash',
-          home: AuthStateScreen(),
+          home: ScreenThree(),
           routes: {
             LandingScreen.routeName: (ctx) => LandingScreen(),
             ChoosePath.routeName: (ctx) => ChoosePath(),

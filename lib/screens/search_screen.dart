@@ -67,18 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       setState(() {
                         loading = true;
                       });
-                      // try {
-                      //   init = false;
-                      //   Response response = await storeApi
-                      //       .searchItem(_searchTextController.text.trim());
-                      //   search = SearchModel.fromMap(Map.from(response.data));
-                      // } catch (e, s) {
-                      //   log(e.toString());
-                      //   log(s.toString());
-                      //   log(e?.message?.toString() ?? e);
-                      //   showError = true;
-                      //   _errorMessage = e.message.toString();
-                      // }
+                    
 
                       setState(() {
                         loading = false;

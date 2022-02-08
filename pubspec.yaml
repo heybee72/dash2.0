@@ -79,6 +79,7 @@ flutter:
     - assets/dash_logo_dark.png
     - assets/location_pin.png
     - assets/
+    - assets/errand/
 
 
   fonts:
