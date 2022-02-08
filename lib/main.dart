@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           title: 'Dash',
-          home: ScreenThree(),
+          home: AuthStateScreen(),
           routes: {
             LandingScreen.routeName: (ctx) => LandingScreen(),
             ChoosePath.routeName: (ctx) => ChoosePath(),
