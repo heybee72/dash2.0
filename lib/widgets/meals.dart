@@ -22,6 +22,8 @@ class MealsWidget extends StatelessWidget {
     final cartAttribute = Provider.of<Cart>(context);
 
     final cartProvider = Provider.of<CartProvider>(context);
+    String data = "${cartProvider.cartList.values.toList()}";
+    print('datais:: ${data}');
 
     return SliverFillRemaining(
       child: TabBarView(
@@ -92,9 +94,6 @@ class MealsWidget extends StatelessWidget {
                                                 ),
                                                 color:
                                                     Constants.secondary_color,
-                                              ),
-                                              SizedBox(
-                                                width: 8,
                                               ),
                                               Text(
                                                 "${_item[i].storeItems[index]['title']}",

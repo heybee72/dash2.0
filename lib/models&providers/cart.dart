@@ -43,7 +43,7 @@ class CartProvider with ChangeNotifier {
           title: value.title,
           imageUrl: value.imageUrl,
           price: value.price,
-          quantity: value.quantity + 1,
+          quantity: value.quantity + quantity,
           itemId: value.itemId,
         ),
       );
@@ -58,13 +58,13 @@ class CartProvider with ChangeNotifier {
           title: title,
           imageUrl: imageUrl,
           price: price,
-          quantity: 1,
+          quantity: quantity,
           itemId: itemId,
         ),
       );
     }
     notifyListeners();
-    print("respose from map print ${_cartList}");
+    // print("respose from map print ${_cartList.values.toList()}");
 
     return true;
   }

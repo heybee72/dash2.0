@@ -55,14 +55,14 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           // onPressed: _loading ? () {} : () async => await _addToCart(),
           onPressed: () {
+            print(
+                'add to cart ${cartProvider.cartList.values.toList().asMap()}');
             cartProvider
                 .addToCart(title, itemId, image, subTotal, _quantity)
                 .then((value) {
               if (value) {
                 // print("added");
                 Navigator.pop(context);
-              } else {
-                print("not added");
               }
             });
           },
@@ -237,15 +237,12 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     children: [
                       InkWell(
                         borderRadius: BorderRadius.circular(180),
-                        onTap: cartAttribute.quantity < 2
-                            ? () {
+                        onTap: _quantity == 1
+                            ? null
+                            : () {
                                 setState(() {
                                   _quantity--;
                                 });
-                              }
-                            : () {
-                                cartProvider.decrementCartProductQuantity(
-                                    itemId: itemId);
                               },
                         child: Container(
                           width: 52.0,

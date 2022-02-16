@@ -38,18 +38,8 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
 
     final _item = itemProvider.fetchItemsByStore(storeId);
 
-    // tabMaker() {
-    //   List<Tab> tabs = [];
-    //   for (var i = 0; i < _item.length; i++) {
-    //     tabs.add(Tab(
-    //       child: Text(
-    //         "${_item[i].itemName}",
-    //         style: TextStyle(fontSize: 12, color: Colors.black),
-    //       ),
-    //     ));
-    //   }
-    //   return tabs;
-    // }
+   
+ 
 
     Size size = MediaQuery.of(context).size;
 
