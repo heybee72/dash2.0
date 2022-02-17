@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">57412578624-d04ogoirtncs2a26oh5is9nkvsh1eqjr.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://dash-9893e.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">57412578624</string>
+    <string name="google_api_key" translatable="false">AIzaSyBp3zx-iWRgw_MbUoAFRop71fFM0ogQld4</string>
+    <string name="google_app_id" translatable="false">1:57412578624:android:d11424f4e92d1f2c6d9ea5</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBp3zx-iWRgw_MbUoAFRop71fFM0ogQld4</string>
+    <string name="google_storage_bucket" translatable="false">dash-9893e.appspot.com</string>
+    <string name="project_id" translatable="false">dash-9893e</string>
+</resources>

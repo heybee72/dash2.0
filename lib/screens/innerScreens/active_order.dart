@@ -17,7 +17,6 @@ class ActiveOrderState extends State<ActiveOrder> {
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController? newGoogleMapController;
 
-
   Position? currentPosition;
   var geolocator = Geolocator();
 
@@ -39,7 +38,7 @@ class ActiveOrderState extends State<ActiveOrder> {
 
     String address =
         await AssistantMethods.searchCordinateAddress(position, context);
-    print("this is your address ::"+address);
+    print("this is your address ::" + address);
   }
 
   static final CameraPosition _kGooglePlex = CameraPosition(
@@ -73,6 +72,71 @@ class ActiveOrderState extends State<ActiveOrder> {
               },
             ),
             Positioned(
+              child: Container(
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height / 7,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "10 mins",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            "Courier Enroute",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, bottom: 0, top: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset(
+                            'assets/green_bar.png',
+                            width: MediaQuery.of(context).size.width / 6,
+                          ),
+                          Image.asset('assets/green_bar.png',
+                              width: MediaQuery.of(context).size.width / 6),
+                          Image.asset('assets/green_bar.png',
+                              width: MediaQuery.of(context).size.width / 6),
+                          Image.asset('assets/green_bar.png',
+                              width: MediaQuery.of(context).size.width / 6),
+                          Image.asset('assets/grey_bar.png',
+                              width: MediaQuery.of(context).size.width / 6),
+                        ],
+                      ),
+                    ),
+                    ListTile(
+                      title: Text('Order details',
+                          style: TextStyle(color: Colors.black, fontSize: 15),
+                          textAlign: TextAlign.left),
+                      onTap: () {},
+                      trailing: IconButton(
+                        icon: Icon(Icons.arrow_forward_ios, size: 16),
+                        onPressed: () {},
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
               left: 0,
               right: 0,
               bottom: 1,
@@ -86,8 +150,8 @@ class ActiveOrderState extends State<ActiveOrder> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blueGrey,
-                      blurRadius: 16,
+                      color: Colors.white,
+                      blurRadius: 0,
                       spreadRadius: 0.5,
                       offset: Offset(0.7, 0.7),
                     ),

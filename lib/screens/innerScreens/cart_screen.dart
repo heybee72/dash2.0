@@ -5,14 +5,20 @@ import 'package:dash_user2/utils/constants.dart';
 import 'package:dash_user2/widgets/empty_cart.dart';
 import 'package:dash_user2/widgets/full_cart.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import 'checkout_screen.dart';
 
-class CartScreen extends StatelessWidget {
+
+class CartScreen extends StatefulWidget {
   static const routeName = "cartScreen";
   const CartScreen({Key? key}) : super(key: key);
 
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -22,7 +28,6 @@ class CartScreen extends StatelessWidget {
     double delivery_fee = cartProvider.totalAmount * 0.1;
     double total_amount = cartProvider.totalAmount + service_fee + delivery_fee;
 
-    // final sfee =  intl.NumberFormat.decimalPattern().format(service_fee);
 
 
 
@@ -119,15 +124,17 @@ class CartScreen extends StatelessWidget {
               ],
             ),
             bottomNavigationBar:
-                _bottomCheckoutSection(total_amount),
+                _bottomCheckoutSection(context, total_amount),
           );
   }
 
-  Container _bottomCheckoutSection(double totalAmount) {
+  Container _bottomCheckoutSection(BuildContext context, double totalAmount) {
     return Container(
       height: 60,
       child: RaisedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed(CheckoutScreen.routeName);
+        },
         color: Constants.secondary_color,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

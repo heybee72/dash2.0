@@ -18,24 +18,9 @@ class _PastOrderState extends State<PastOrder> {
   @override
   void initState() {
     super.initState();
-    // _appState = Provider.of<AppState>(context, listen: false);
-    // _api = StoreApi(token: _appState.user.token);
 
-    // getOrders();
   }
 
-  // void getOrders() async {
-    // var response = await _api.getOrders();
-  //   if (response != null && response.statusCode == 200) {
-  //     print("store ${response.data}");
-
-  //     data = response.data['data'] as List<dynamic>;
-  //     _isLoading = false;
-
-  //     if (!mounted) return;
-  //     setState(() {});
-  //   }
-  // }
 
 
   @override

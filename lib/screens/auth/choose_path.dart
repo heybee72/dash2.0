@@ -1,13 +1,34 @@
 import 'package:dash_user2/screens/auth/register_screen.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:dash_user2/utils/custom_sized_box.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'get_phone_number.dart';
 import 'login_screen.dart';
 
-class ChoosePath extends StatelessWidget {
+class ChoosePath extends StatefulWidget {
   static const routeName = 'landing_page';
   const ChoosePath({Key? key}) : super(key: key);
+
+  @override
+  _ChoosePathState createState() => _ChoosePathState();
+}
+
+class _ChoosePathState extends State<ChoosePath> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future signInAnon() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    UserCredential user = await _auth.signInAnonymously();
+    print("signed in as ${user.user!.uid}");
+    // print("signed in as ${user.user!.isAnonymous}");
+    prefs.setString('isAnonymous', user.user!.isAnonymous.toString());
+    // NOTE:: Store the user anonymous status in shared preferences
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +60,9 @@ class ChoosePath extends StatelessWidget {
                 ),
               ),
             ),
+            CustomSizedBox(
+              height: size.height * 0.1,
+            ),
             Container(
               height: 52.0,
               margin: EdgeInsets.only(
@@ -62,37 +86,39 @@ class ChoosePath extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(LoginScreen.routeName);
+                  Navigator.of(context)
+                      .pushNamed(GetPhoneNumberScreen.routeName);
                 },
               ),
             ),
-            Container(
-              height: 52.0,
-              margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
-              width: size.width,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  primary: Constants.secondary_color,
-                  side:
-                      BorderSide(width: 1.0, color: Constants.secondary_color),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0),
-                  ),
-                ),
-                child: Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Constants.secondary_color,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'EuclidCircularB',
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(RegisterScreen.routeName);
-                },
-              ),
-            ),
+            // Container(
+            //   height: 52.0,
+            //   margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
+            //   width: size.width,
+            //   child: OutlinedButton(
+            //     style: OutlinedButton.styleFrom(
+            //       primary: Constants.secondary_color,
+            //       side:
+            //           BorderSide(width: 1.0, color: Constants.secondary_color),
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(6.0),
+            //       ),
+            //     ),
+            //     child: Text(
+            //       "Sign Up",
+            //       style: TextStyle(
+            //         fontSize: 17,
+            //         color: Constants.secondary_color,
+            //         fontWeight: FontWeight.bold,
+            //         fontFamily: 'EuclidCircularB',
+            //       ),
+            //     ),
+            //     onPressed: () {
+            //       // Navigator.of(context).pushNamed(RegisterScreen.routeName);
+            //       Navigator.of(context).pushNamed(GetPhoneNumberScreen.routeName);
+            //     },
+            //   ),
+            // ),
             CustomSizedBox(
               height: 20,
             ),
@@ -141,6 +167,7 @@ class ChoosePath extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
+                    signInAnon();
                     // Navigator.of(context)
                     //     .push(MaterialPageRoute(builder: (context) {
                     //   return LoginScreen();

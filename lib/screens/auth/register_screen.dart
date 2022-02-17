@@ -3,12 +3,14 @@ import 'package:dash_user2/screens/auth/login_screen.dart';
 import 'package:dash_user2/services/global_methods.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'get_phone_number.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register-screen';
-  const RegisterScreen({Key? key}) : super(key: key);
+  String? phoneNumber;
+  RegisterScreen({Key? key, this.phoneNumber}) : super(key: key);
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -19,8 +21,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _firstName = '';
   String _lastName = '';
   String _email = '';
-  String _phone = '';
   String _password = '';
+
+  // final arg = ModalRoute.of(context)!.settings.arguments as Map;
 
   bool _isVisible = true;
   bool _loading = false;
@@ -44,8 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: _email.toLowerCase().trim(), password: _password.trim());
-      // .then((value) =>
-      //     Navigator.canPop(context) ? Navigator.pop(context) : null);
+
       final User user = _auth.currentUser!;
       final _uid = user.uid;
       FirebaseFirestore.instance.collection('users').doc(_uid).set({
@@ -53,7 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'firstName': _firstName.trim(),
         'lastName': _lastName.trim(),
         'email': _email.toLowerCase().trim(),
-        'phone': _phone.trim(),
+        'phone': widget.phoneNumber.toString().trim(),
         'joinedDate': formattedDate,
         'createdAt': Timestamp.now(),
       });
@@ -208,41 +210,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 20),
                     TextFormField(
-                      onSaved: (value) {
-                        _phone = value!;
-                      },
-                      textInputAction: TextInputAction.next,
-                      onEditingComplete: () =>
-                          FocusScope.of(context).requestFocus(
-                        _passwordFocusNode,
-                      ),
-                      keyboardType: TextInputType.phone,
-                      key: ValueKey('phone'),
-                      decoration: InputDecoration(
-                        hintText: 'Phone number',
-                        hintStyle:
-                            TextStyle(color: Color(0XFF777777), fontSize: 16.0),
-                        filled: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Constants.secondary_color, width: 2.0),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.length == 0) {
-                          return 'Please enter mobile number';
-                        } else if (value.length < 10) {
-                          return 'Please enter valid mobile number';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    TextFormField(
                       focusNode: _passwordFocusNode,
                       onSaved: (value) {
                         _password = value!;
@@ -348,7 +315,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: GestureDetector(
                         onTap: () {
                           Navigator.pushNamedAndRemoveUntil(
-                              context, LoginScreen.routeName, (route) => false);
+                              context, GetPhoneNumberScreen.routeName, (route) => false);
                         },
                         child: RichText(
                           textAlign: TextAlign.center,

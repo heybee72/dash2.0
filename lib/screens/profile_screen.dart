@@ -3,6 +3,9 @@ import 'package:dash_user2/utils/user_list_tile.dart';
 import 'package:dash_user2/widgets/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'auth/get_phone_number.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile-screen';
@@ -10,6 +13,17 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future checkAnonymous() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? isAnonymous = prefs.getString('isAnonymous');
+
+      if (isAnonymous == 'true') {
+       Navigator.of(context).pushNamed(GetPhoneNumberScreen.routeName);
+      } else {
+        Navigator.of(context).pushNamed(Profile.routeName);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -29,7 +43,8 @@ class ProfileScreen extends StatelessWidget {
               title: 'Profile',
               tIcon: Icons.arrow_forward_ios,
               tIconCallback: () {
-                Navigator.of(context).pushNamed(Profile.routeName);
+                checkAnonymous();
+                // Navigator.of(context).pushNamed(Profile.routeName);
               },
               onTap: () {},
             ),

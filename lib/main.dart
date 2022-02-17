@@ -25,12 +25,14 @@ import 'models&providers/items.dart';
 import 'models&providers/store.dart';
 import 'screens/auth/auth_stream.dart';
 import 'screens/auth/choose_path.dart';
+import 'screens/auth/get_phone_number.dart';
 import 'screens/bottom_nav_screen.dart';
+import 'screens/innerScreens/checkout_screen.dart';
 import 'screens/innerScreens/choose_category.dart';
 import 'screens/innerScreens/item_details_screen.dart';
 import 'screens/landing_screen.dart';
 
-Future<void> main()async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -70,13 +72,16 @@ class MyApp extends StatelessWidget {
           ),
           title: 'Dash',
           home: AuthStateScreen(),
+          // home: GetPhoneNumberScreen(),
           routes: {
             LandingScreen.routeName: (ctx) => LandingScreen(),
             ChoosePath.routeName: (ctx) => ChoosePath(),
             LoginScreen.routeName: (ctx) => LoginScreen(),
             RegisterScreen.routeName: (ctx) => RegisterScreen(),
             ForgotPasswordScreen.routeName: (ctx) => ForgotPasswordScreen(),
+            GetPhoneNumberScreen.routeName: (ctx) => GetPhoneNumberScreen(),
             VerifyPhoneNumber.routeName: (ctx) => VerifyPhoneNumber(),
+            
             ChooseLocation.routeName: (ctx) => ChooseLocation(),
             ChooseCategory.routeName: (ctx) => ChooseCategory(),
             StoreDetailScreen.routeName: (ctx) => StoreDetailScreen(),
@@ -88,6 +93,7 @@ class MyApp extends StatelessWidget {
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
             Profile.routeName: (ctx) => Profile(),
             CartScreen.routeName: (ctx) => CartScreen(),
+            CheckoutScreen.routeName: (ctx) => CheckoutScreen(),
           },
         ),
       ),
