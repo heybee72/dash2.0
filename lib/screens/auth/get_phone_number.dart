@@ -2,6 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'verify_phone_number.dart';
 
@@ -20,7 +21,11 @@ class _GetPhoneNumberScreenState extends State<GetPhoneNumberScreen> {
   String _phone = '';
   String phoneIsoCode = "+234";
   @override
-  void _submitData() {
+  void _submitData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool? isAnonymous = prefs.getBool('isAnonymous');
+    print("isAnonymous");
+      print(isAnonymous);
     final _isValid = _formKey.currentState!.validate();
     if (_isValid) {
       setState(() {

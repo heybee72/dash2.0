@@ -61,36 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: Constants.grey_color,
                     ),
                   ),
-                  suffixIcon: GestureDetector(
-                    onTap: () async {
-                      showError = false;
-                      setState(() {
-                        loading = true;
-                      });
-                    
-
-                      setState(() {
-                        loading = false;
-                        // showError = false;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Container(
-                        height: 15,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0,
-                          vertical: 10.0,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Constants.secondary_color,
-                        ),
-                        child: ImageIcon(AssetImage('assets/search_light.png'),
-                            size: 20.0, color: Constants.background_color_2),
-                      ),
-                    ),
-                  ),
+                  
                   hintText: "",
                   border: OutlineInputBorder(borderSide: BorderSide.none),
                   focusedBorder: OutlineInputBorder(

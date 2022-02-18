@@ -45,9 +45,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _formKey.currentState!.save();
     }
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: _email.toLowerCase().trim(), password: _password.trim());
-
       final User user = _auth.currentUser!;
       final _uid = user.uid;
       FirebaseFirestore.instance.collection('users').doc(_uid).set({
@@ -303,38 +300,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                         onPressed: _submitData,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 24.0,
-                        right: 24.0,
-                        bottom: 60.0,
-                        top: 20.0,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, GetPhoneNumberScreen.routeName, (route) => false);
-                        },
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: TextStyle(
-                                fontSize: 12.0,
-                                color: Color(0XFF777777),
-                                fontFamily: 'EuclidCircularB'),
-                            children: [
-                              TextSpan(text: "Already have an account? "),
-                              TextSpan(
-                                  text: "Log in",
-                                  style: TextStyle(
-                                      color: Constants.secondary_color,
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.underline))
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                   ],

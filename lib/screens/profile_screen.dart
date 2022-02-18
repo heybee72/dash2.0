@@ -15,10 +15,14 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Future checkAnonymous() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? isAnonymous = prefs.getString('isAnonymous');
+      bool? isAnonymous = prefs.getBool('isAnonymous');
+      print("isAnonymous");
+      print(isAnonymous);
+      if (isAnonymous == true && prefs.containsKey('isAnonymous')) {
+        prefs.setBool('isAnonymous', false);
+        
 
-      if (isAnonymous == 'true') {
-       Navigator.of(context).pushNamed(GetPhoneNumberScreen.routeName);
+        Navigator.of(context).pushNamed(GetPhoneNumberScreen.routeName);
       } else {
         Navigator.of(context).pushNamed(Profile.routeName);
       }

@@ -25,7 +25,7 @@ class _ChoosePathState extends State<ChoosePath> {
     UserCredential user = await _auth.signInAnonymously();
     print("signed in as ${user.user!.uid}");
     // print("signed in as ${user.user!.isAnonymous}");
-    prefs.setString('isAnonymous', user.user!.isAnonymous.toString());
+    prefs.setBool('isAnonymous', user.user!.isAnonymous);
     // NOTE:: Store the user anonymous status in shared preferences
     return user;
   }

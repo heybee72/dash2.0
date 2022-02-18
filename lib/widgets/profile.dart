@@ -1,10 +1,46 @@
 import 'package:dash_user2/utils/custom_sized_box.dart';
 import 'package:dash_user2/utils/user_list_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   static const String routeName = '/profile';
   const Profile({Key? key}) : super(key: key);
+
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  late String _uid = '';
+  late String _firstname = '';
+  late String _lastname = '';
+  late String _email = '';
+  late String _phone = '';
+
+  void _getData() async {
+    User? user = _auth.currentUser;
+    _uid = user!.uid;
+    final DocumentSnapshot userDocs =
+        await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+
+    setState(() {
+      _firstname = userDocs.get('firstName');
+      _lastname = userDocs.get('lastName');
+      _email = userDocs.get('email');
+      _phone = userDocs.get('phone');
+    });
+    print("the email");
+    print(_email);
+  }
+
+  @override
+  initState() {
+    super.initState();
+    _getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +73,12 @@ class Profile extends StatelessWidget {
           child: Column(
             children: [
               CustomSizedBox(height: 75),
-
               CustomSizedBox(height: 16),
-              ProfileCard(title: 'First name', subtitle: 'Junaid'),
-               CustomSizedBox(height: 16),
-              ProfileCard(title: 'Last name', subtitle: 'Junaid'),
-               CustomSizedBox(height: 16),
-              ProfileCard(title: 'E-mail', subtitle: 'abrahambossey@gmail.com'),
+              ProfileCard(title: 'First name', subtitle: _firstname),
+              CustomSizedBox(height: 16),
+              ProfileCard(title: 'Last name', subtitle: _lastname),
+              CustomSizedBox(height: 16),
+              ProfileCard(title: 'E-mail', subtitle: '$_email'),
               CustomSizedBox(height: 16),
               Card(
                 color: Color(0xFFF4F4F4),
@@ -66,7 +101,7 @@ class Profile extends StatelessWidget {
                     subtitle: Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
-                          "+2349188920391",
+                          "$_phone",
                           style: TextStyle(
                               color: Color(0xFFC4C4C4),
                               fontSize: 16,

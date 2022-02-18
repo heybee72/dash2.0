@@ -1,4 +1,5 @@
 import 'package:alt_sms_autofill/alt_sms_autofill.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -63,9 +64,9 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
         await _auth
             .signInWithCredential(credential)
             .then((value) {
-              if (value.additionalUserInfo!.isNewUser == 'false') {
-                Navigator.pushNamed(context, BottomNavScreen.routeName);
-              } else {
+              print(value.additionalUserInfo!.isNewUser);
+              print(value.user!.uid);
+              if (value.additionalUserInfo!.isNewUser) {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -74,6 +75,8 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
                     },
                   ),
                 );
+              } else {
+                Navigator.pushNamed(context, BottomNavScreen.routeName);
               }
               // Navigator.pushReplacementNamed(
               // context, BottomNavScreen.routeName);
