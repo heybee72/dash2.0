@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "57412578624",
+    "firebase_url": "https://dash-9893e.firebaseio.com",
+    "project_id": "dash-9893e",
+    "storage_bucket": "dash-9893e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57412578624:android:26cf23193e446d356d9ea5",
+        "android_client_info": {
+          "package_name": "com.dash.dash_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "57412578624-d04ogoirtncs2a26oh5is9nkvsh1eqjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBp3zx-iWRgw_MbUoAFRop71fFM0ogQld4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "57412578624-c4c21erk2ph743ck2lti1h6v6lihu9e1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "57412578624-20pvb5dbrg3nsuhvqqd77rmc1l0kln5i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "africa.dash.dash"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57412578624:android:d11424f4e92d1f2c6d9ea5",
+        "android_client_info": {
+          "package_name": "com.example.dash_user2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "57412578624-e1q53j0qcbjoch4edo25g19h3jm0mp7u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dash_user2",
+            "certificate_hash": "ebc1e552d4968cb8d94dfe2d237cfb2b27e624c7"
+          }
+        },
+        {
+          "client_id": "57412578624-d04ogoirtncs2a26oh5is9nkvsh1eqjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBp3zx-iWRgw_MbUoAFRop71fFM0ogQld4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "57412578624-c4c21erk2ph743ck2lti1h6v6lihu9e1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "57412578624-20pvb5dbrg3nsuhvqqd77rmc1l0kln5i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "africa.dash.dash"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
