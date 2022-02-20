@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dash_user2/screens/auth/login_screen.dart';
+import 'package:dash_user2/global/global.dart';
 import 'package:dash_user2/services/global_methods.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'get_phone_number.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register-screen';
@@ -21,11 +20,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _firstName = '';
   String _lastName = '';
   String _email = '';
-  String _password = '';
+  // String _password = '';
 
   // final arg = ModalRoute.of(context)!.settings.arguments as Map;
 
-  bool _isVisible = true;
+  // bool _isVisible = true;
   bool _loading = false;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -56,6 +55,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'joinedDate': formattedDate,
         'createdAt': Timestamp.now(),
       });
+
+      sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences!.setString('uid', _uid);
+      await sharedPreferences!.setString('firstName', _firstName.trim());
+      await sharedPreferences!.setString('_lastName', _lastName.trim());
+      await sharedPreferences!.setString('email', _email.toLowerCase().trim());
+      await sharedPreferences!
+          .setString('phone', widget.phoneNumber.toString().trim());
       Navigator.canPop(context) ? Navigator.pop(context) : null;
     } catch (e) {
       _globalMethods.authDialog(context, e.toString());
@@ -206,50 +213,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                     ),
                     SizedBox(height: 20),
-                    TextFormField(
-                      focusNode: _passwordFocusNode,
-                      onSaved: (value) {
-                        _password = value!;
-                      },
-                      onEditingComplete: _submitData,
-                      obscureText: _isVisible,
-                      key: ValueKey('password'),
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        hintStyle: TextStyle(
-                          color: Color(0XFF777777),
-                        ),
-                        filled: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Constants.secondary_color, width: 2.0),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: !_isVisible
-                              ? Icon(
-                                  Icons.visibility,
-                                  color: Constants.secondary_color,
-                                )
-                              : Icon(Icons.visibility_off,
-                                  color: Colors.black26),
-                          onPressed: () {
-                            setState(() {
-                              _isVisible = !_isVisible;
-                            });
-                          },
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty || value.length < 6) {
-                          return 'Password must be at least 6 characters long';
-                        }
-                        return null;
-                      },
-                    ),
+                    // TextFormField(
+                    //   focusNode: _passwordFocusNode,
+                    //   onSaved: (value) {
+                    //     _password = value!;
+                    //   },
+                    //   onEditingComplete: _submitData,
+                    //   obscureText: _isVisible,
+                    //   key: ValueKey('password'),
+                    //   decoration: InputDecoration(
+                    //     hintText: 'Password',
+                    //     hintStyle: TextStyle(
+                    //       color: Color(0XFF777777),
+                    //     ),
+                    //     filled: true,
+                    //     focusedBorder: OutlineInputBorder(
+                    //       borderSide: const BorderSide(
+                    //           color: Constants.secondary_color, width: 2.0),
+                    //     ),
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.circular(12),
+                    //       borderSide: BorderSide.none,
+                    //     ),
+                    //     suffixIcon: IconButton(
+                    //       icon: !_isVisible
+                    //           ? Icon(
+                    //               Icons.visibility,
+                    //               color: Constants.secondary_color,
+                    //             )
+                    //           : Icon(Icons.visibility_off,
+                    //               color: Colors.black26),
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           _isVisible = !_isVisible;
+                    //         });
+                    //       },
+                    //     ),
+                    //   ),
+                    //   validator: (value) {
+                    //     if (value!.isEmpty || value.length < 6) {
+                    //       return 'Password must be at least 6 characters long';
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     SizedBox(height: 30),
                     Padding(
                       padding: const EdgeInsets.only(

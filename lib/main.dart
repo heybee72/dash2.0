@@ -1,4 +1,4 @@
-import 'package:dash_user2/errand/screen2.dart';
+
 import 'package:dash_user2/screens/auth/forgot_password_screen.dart';
 import 'package:dash_user2/screens/auth/login_screen.dart';
 import 'package:dash_user2/screens/auth/register_screen.dart';
@@ -15,10 +15,11 @@ import 'package:dash_user2/widgets/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dataHandler/appData.dart';
-import 'errand/screen1.dart';
-import 'errand/screen3.dart';
+
+import 'global/global.dart';
 import 'models&providers/cart.dart';
 import 'models&providers/item_category.dart';
 import 'models&providers/items.dart';
@@ -31,9 +32,11 @@ import 'screens/innerScreens/checkout_screen.dart';
 import 'screens/innerScreens/choose_category.dart';
 import 'screens/innerScreens/item_details_screen.dart';
 import 'screens/landing_screen.dart';
+import 'splashScreen/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  sharedPreferences = await SharedPreferences.getInstance();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -71,7 +74,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           title: 'Dash',
-          home: AuthStateScreen(),
+          home: MySplashScreen(),
           // home: GetPhoneNumberScreen(),
           routes: {
             LandingScreen.routeName: (ctx) => LandingScreen(),

@@ -1,15 +1,19 @@
 import 'package:alt_sms_autofill/alt_sms_autofill.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_user2/global/global.dart';
+import 'package:dash_user2/screens/auth/auth_stream.dart';
 import 'package:dash_user2/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bottom_nav_screen.dart';
 import 'register_screen.dart';
 
+// ignore: must_be_immutable
 class VerifyPhoneNumber extends StatefulWidget {
   static const routeName = '/verify-phone-number';
   String? phoneNumber;
@@ -61,9 +65,11 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
       var credential = PhoneAuthProvider.credential(
           verificationId: _verificationId, smsCode: code!.toString());
       try {
+        User? currentUser;
         await _auth
             .signInWithCredential(credential)
             .then((value) {
+              currentUser = value.user!;
               print(value.additionalUserInfo!.isNewUser);
               print(value.user!.uid);
               if (value.additionalUserInfo!.isNewUser) {
@@ -76,10 +82,9 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
                   ),
                 );
               } else {
-                Navigator.pushNamed(context, BottomNavScreen.routeName);
+                // save user into local storage
+                readDataAndSetDataLocally(currentUser!);
               }
-              // Navigator.pushReplacementNamed(
-              // context, BottomNavScreen.routeName);
             })
             .whenComplete(() {})
             .onError((error, stackTrace) {
@@ -101,6 +106,35 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
         }
       }
     }
+  }
+
+  Future readDataAndSetDataLocally(User currentUser) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currentUser.uid)
+        .get()
+        .then((snapshot) async {
+      if (snapshot.exists) {
+        await sharedPreferences!.setString('uid', currentUser.uid);
+        await sharedPreferences!.setString('email', snapshot.data()!['email']);
+        await sharedPreferences!
+            .setString('firstName', snapshot.data()!['firstName']);
+        await sharedPreferences!
+            .setString('lastName', snapshot.data()!['lastName']);
+        await sharedPreferences!.setString('phone', snapshot.data()!['phone']);
+        Navigator.pushNamed(context, BottomNavScreen.routeName);
+      } else {
+        firebaseAuth.signOut();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return AuthStateScreen();
+            },
+          ),
+        );
+      }
+    });
   }
 
   @override

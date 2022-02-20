@@ -1,3 +1,4 @@
+import 'package:dash_user2/global/global.dart';
 import 'package:dash_user2/utils/custom_sized_box.dart';
 import 'package:dash_user2/utils/user_list_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,33 +14,33 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  late String _uid = '';
-  late String _firstname = '';
-  late String _lastname = '';
-  late String _email = '';
-  late String _phone = '';
+  // FirebaseAuth _auth = FirebaseAuth.instance;
+  late String _uid = sharedPreferences!.getString('uid')!;
+  late String _firstname = sharedPreferences!.getString('firstName')!;
+  late String _lastname = sharedPreferences!.getString('lastName')!;
+  late String _email = sharedPreferences!.getString('email')!;
+  late String _phone = sharedPreferences!.getString('phone')!;
 
-  void _getData() async {
-    User? user = _auth.currentUser;
-    _uid = user!.uid;
-    final DocumentSnapshot userDocs =
-        await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+  // void _getData() async {
+  //   User? user = _auth.currentUser;
+  //   _uid = user!.uid;
+  //   final DocumentSnapshot userDocs =
+  //       await FirebaseFirestore.instance.collection('users').doc(_uid).get();
 
-    setState(() {
-      _firstname = userDocs.get('firstName');
-      _lastname = userDocs.get('lastName');
-      _email = userDocs.get('email');
-      _phone = userDocs.get('phone');
-    });
-    print("the email");
-    print(_email);
-  }
+  //   setState(() {
+  //     _firstname = userDocs.get('firstName');
+  //     _lastname = userDocs.get('lastName');
+  //     _email = userDocs.get('email');
+  //     _phone = userDocs.get('phone');
+  //   });
+  //   print("the email");
+  //   print(_email);
+  // }
 
   @override
   initState() {
     super.initState();
-    _getData();
+    // _getData();
   }
 
   @override
@@ -76,7 +77,9 @@ class _ProfileState extends State<Profile> {
               CustomSizedBox(height: 16),
               ProfileCard(title: 'First name', subtitle: _firstname),
               CustomSizedBox(height: 16),
-              ProfileCard(title: 'Last name', subtitle: _lastname),
+              ProfileCard(
+                  title: 'Last name',
+                  subtitle: _lastname),
               CustomSizedBox(height: 16),
               ProfileCard(title: 'E-mail', subtitle: '$_email'),
               CustomSizedBox(height: 16),
