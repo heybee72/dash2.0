@@ -59,7 +59,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       sharedPreferences = await SharedPreferences.getInstance();
       await sharedPreferences!.setString('uid', _uid);
       await sharedPreferences!.setString('firstName', _firstName.trim());
-      await sharedPreferences!.setString('_lastName', _lastName.trim());
+      await sharedPreferences!.setString('lastName', _lastName.trim());
+      await sharedPreferences!.setString('phone', widget.phoneNumber.toString().trim());
       await sharedPreferences!.setString('email', _email.toLowerCase().trim());
       await sharedPreferences!
           .setString('phone', widget.phoneNumber.toString().trim());

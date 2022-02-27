@@ -21,21 +21,6 @@ class _ProfileState extends State<Profile> {
   late String _email = sharedPreferences!.getString('email')!;
   late String _phone = sharedPreferences!.getString('phone')!;
 
-  // void _getData() async {
-  //   User? user = _auth.currentUser;
-  //   _uid = user!.uid;
-  //   final DocumentSnapshot userDocs =
-  //       await FirebaseFirestore.instance.collection('users').doc(_uid).get();
-
-  //   setState(() {
-  //     _firstname = userDocs.get('firstName');
-  //     _lastname = userDocs.get('lastName');
-  //     _email = userDocs.get('email');
-  //     _phone = userDocs.get('phone');
-  //   });
-  //   print("the email");
-  //   print(_email);
-  // }
 
   @override
   initState() {

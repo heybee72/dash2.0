@@ -14,18 +14,18 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future checkAnonymous() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool? isAnonymous = prefs.getBool('isAnonymous');
-      print("isAnonymous");
-      print(isAnonymous);
-      if (isAnonymous == true && prefs.containsKey('isAnonymous')) {
-        prefs.setBool('isAnonymous', false);
-        
-
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user!.isAnonymous) {
         Navigator.of(context).pushNamed(GetPhoneNumberScreen.routeName);
-      } else {
+      }else {
         Navigator.of(context).pushNamed(Profile.routeName);
       }
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // bool? isAnonymous = prefs.getBool('isAnonymous');
+
+      // if (isAnonymous == true && prefs.containsKey('isAnonymous')) {
+      //   prefs.setBool('isAnonymous', false);
+      // } 
     }
 
     return Scaffold(
