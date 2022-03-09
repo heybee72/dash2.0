@@ -16,19 +16,15 @@ class CustomTextField extends StatelessWidget {
       this.data,
       this.hintText,
       this.isObscure,
-      this.enabled, this.inputType})
+      this.enabled,
+      this.inputType})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   border: Border.all(color: Colors.grey),
-      //   borderRadius: BorderRadius.circular(10),
-      // ),
       margin: EdgeInsets.all(4),
-      padding: EdgeInsets.symmetric(horizontal:16, vertical:8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextFormField(
         controller: controller,
         obscureText: isObscure ?? false,
@@ -37,7 +33,7 @@ class CustomTextField extends StatelessWidget {
         textInputAction: TextInputAction.next,
         keyboardType: inputType,
         decoration: InputDecoration(
-          prefixIcon: Icon(data, size:16, color: Constants.primary_color),
+          prefixIcon: Icon(data, size: 16, color: Constants.primary_color),
           hintText: hintText,
           hintStyle: TextStyle(color: Color(0XFF777777), fontSize: 14.0),
           filled: true,
@@ -50,7 +46,6 @@ class CustomTextField extends StatelessWidget {
             borderSide: BorderSide.none,
           ),
         ),
-       
       ),
     );
   }

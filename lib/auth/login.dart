@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future readDataAndSetDataLocally(User currentUser) async {
-    print("data from firebase");
+  
     await FirebaseFirestore.instance
         .collection("stores")
         .doc(currentUser.uid)

@@ -1,19 +1,31 @@
 import 'dart:io';
 
+import 'package:address_search_field/address_search_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_store/dataHandler/appData.dart';
 import 'package:dash_store/global/global.dart';
+import 'package:dash_store/models/address.dart';
+import 'package:dash_store/models/place_predictions.dart';
 import 'package:dash_store/screens/home_screen.dart';
+import 'package:dash_store/utils/configMaps.dart';
 import 'package:dash_store/utils/constants.dart';
+import 'package:dash_store/utils/requestAssistants.dart';
 import 'package:dash_store/widgets/custom_text_field.dart';
+import 'package:dash_store/widgets/divider.dart';
 import 'package:dash_store/widgets/error_dialog.dart';
 import 'package:dash_store/widgets/loading_dialog.dart';
+import 'package:dash_store/widgets/progressDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
+// import 'package:geocoding/geocoding.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:location/location.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
@@ -31,12 +43,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _locationController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final geoMethods = GeoMethods(
+    googleApiKey: '${mapKey}',
+    language: 'en',
+    country: 'Nigeria',
+  );
+
+  LatLng _initialPositon = LatLng(0.00, 0.0000);
+
+  // Future<LatLng> _getPosition() async {
+  //   final Location location = Location();
+  //   if (!await location.serviceEnabled()) {
+  //     if (!await location.requestService()) throw 'GPS service is disabled';
+  //   }
+  //   if (await location.hasPermission() == PermissionStatus.denied) {
+  //     if (await location.requestPermission() != PermissionStatus.granted)
+  //       throw 'No GPS permissions';
+  //   }
+  //   final LocationData data = await location.getLocation();
+  //   return LatLng(data.latitude!, data.longitude!);
+  // }
+
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
 
-  Position? position;
-  List<Placemark>? placemark;
+  // Position? position;
+  // List<Placemark>? placemark;
   String storeImageUrl = '';
+  final geo = Geoflutterfire();
+  String lat = '';
+  String lng = '';
+
+  List<PlacePredictions> placePrecidtionList = [];
+  final origCtrl = TextEditingController();
 
   Future<void> _getImage() async {
     imageXFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -47,9 +86,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   getCurrentLocation() async {
     bool serviceEnabled;
+    bool permisionGranted = false;
     LocationPermission permission;
+
+    var perm = await Geolocator.checkPermission();
+
+    permisionGranted = perm == LocationPermission.whileInUse ||
+        perm == LocationPermission.always;
+
+    if (!permisionGranted) {
+      Geolocator.requestPermission();
+    }
+
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      Geolocator.requestPermission();
       return Future.error('Location services are disabled.');
     }
     permission = await Geolocator.checkPermission();
@@ -66,18 +117,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    Position newPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    // Position newPosition = await Geolocator.getCurrentPosition(
+    //     desiredAccuracy: LocationAccuracy.high);
 
-    position = newPosition;
-    placemark = await placemarkFromCoordinates(
-      position!.latitude,
-      position!.longitude,
-    );
-    Placemark pMark = placemark![0];
-    String completeAddress =
-        '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} ${pMark.administrativeArea}, ${pMark.postalCode} ${pMark.country}';
-    _locationController.text = completeAddress;
+    // position = newPosition;
+    // placemark = await placemarkFromCoordinates(
+    //   position!.latitude,
+    //   position!.longitude,
+    // );
+    // Placemark pMark = placemark![0];
+    // String completeAddress =
+    //     '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} ${pMark.administrativeArea}, ${pMark.postalCode} ${pMark.country}';
+    // _locationController.text = completeAddress;
   }
 
   Future<void> formValidation() async {
@@ -118,7 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _phoneController.text.isNotEmpty &&
             _storeNameController.text.isNotEmpty &&
             _passwordController.text.isNotEmpty &&
-            _locationController.text.isNotEmpty) {
+            origCtrl.text.isNotEmpty) {
           //  start uploading
           showDialog(
             context: context,
@@ -188,7 +239,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
     if (currentUser != null) {
       saveDataToFireStore(currentUser!).then((value) {
-       
         Navigator.of(context).pop();
 
         Route newRoute = MaterialPageRoute(builder: (c) => HomeScreen());
@@ -198,17 +248,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future saveDataToFireStore(User currentUser) async {
+    GeoFirePoint myLocation =
+        geo.point(latitude: double.parse(lat), longitude: double.parse(lng));
     FirebaseFirestore.instance.collection("stores").doc(currentUser.uid).set({
       "storeUID": currentUser.uid,
       "storeEmail": currentUser.email,
       "storeName": _storeNameController.text.trim(),
       "storePhone": _phoneController.text.trim(),
       "storeImageUrl": storeImageUrl,
-      "storeLocation": _locationController.text,
+      "storeLocation": origCtrl.text,
       "status": "approved",
       "earnings": 0.00,
-      "lat": position!.latitude,
-      "lng": position!.longitude,
+      "lat": double.parse(lat),
+      "lng": double.parse(lng),
+      'position': myLocation.data
     });
 
     // save data locally
@@ -293,30 +346,174 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     inputType: TextInputType.text,
                     isObscure: true,
                   ),
-                  CustomTextField(
-                    controller: _locationController,
-                    hintText: 'Store/Outlet Address',
-                    data: Icons.my_location,
-                    enabled: false,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 45,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        getCurrentLocation();
-                      },
-                      label: Text("Get my Current Location"),
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        primary: Constants.grey_color,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                  // CustomTextField(
+                  //   controller: _locationController,
+                  //   hintText: 'Store/Outlet Address',
+                  //   data: Icons.my_location,
+                  // ),
+                  // Opacity(
+                  //   opacity: 0,
+
+                  RouteSearchBox(
+                    geoMethods: geoMethods,
+                    originCtrl: origCtrl,
+                    destinationCtrl: origCtrl,
+                    builder: (context,
+                        originBuilder,
+                        destinationBuilder,
+                        waypointBuilder,
+                        waypointsMgr,
+                        relocate,
+                        getDirections) {
+                      if (origCtrl.text.isEmpty)
+                        relocate(AddressId.origin, _initialPositon.toCoords());
+                      return Container(
+                        margin: EdgeInsets.all(4),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: TextFormField(
+                          controller: origCtrl,
+                          // enabled: false,
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => originBuilder.buildDefault(
+                              builder: AddressDialogBuilder(),
+                              onDone: (address) async {
+                                String data = address.coords!.toString();
+                                print("data1::::" + data);
+                                final splitted = data.split(',');
+                                print("data2::::" + splitted[0]);
+                                print("data3::::" + splitted[1]);
+
+                                setState(() {
+                                  _initialPositon = address.coords!;
+                                  lat = splitted[0];
+                                  lng = splitted[1];
+                                });
+                              },
+                            ),
+                          ),
+                          cursorColor: Constants.primary_color,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.my_location,
+                                size: 16, color: Constants.primary_color),
+                            hintText: 'Store/Outlet Address',
+                            hintStyle: TextStyle(
+                                color: Color(0XFF777777), fontSize: 14.0),
+                            filled: true,
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Constants.secondary_color, width: 2.0),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
-                      ),
-                      icon: Icon(Icons.location_on),
-                    ),
+                      );
+
+                      // Container(
+                      //   padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      //   color: Colors.green[50],
+                      //   height: 150.0,
+                      //   child: Column(
+                      //     children: [
+                      //       TextField(
+                      //         controller: origCtrl,
+                      //         onTap: () => showDialog(
+                      //           context: context,
+                      //           builder: (context) =>
+                      //               originBuilder.buildDefault(
+                      //             builder: AddressDialogBuilder(),
+                      //             onDone: (address) {
+                      //               print(address);
+                      //               print(_initialPositon.toCoords());
+                      //             },
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // );
+                    },
                   ),
+// ====================//
+                  // Container(
+                  //   margin: EdgeInsets.all(4),
+                  //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  //   child: TextFormField(
+                  //     controller: _locationController,
+                  //     cursorColor: Constants.primary_color,
+                  //     textInputAction: TextInputAction.next,
+                  //     keyboardType: TextInputType.text,
+                  //     decoration: InputDecoration(
+                  //       prefixIcon: Icon(Icons.my_location,
+                  //           size: 16, color: Constants.primary_color),
+                  //       hintText: 'Store/Outlet Address',
+                  //       hintStyle:
+                  //           TextStyle(color: Color(0XFF777777), fontSize: 14.0),
+                  //       filled: true,
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderSide: const BorderSide(
+                  //             color: Constants.secondary_color, width: 2.0),
+                  //       ),
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //         borderSide: BorderSide.none,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
+                  // ///////////////////////////////////////
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // (placePrecidtionList.length > 0)
+                  //     ? Padding(
+                  //         padding: EdgeInsets.symmetric(
+                  //           vertical: 8,
+                  //           horizontal: 16.0,
+                  //         ),
+                  //         child: ListView.separated(
+                  //           padding: EdgeInsets.all(0),
+                  //           itemBuilder: (context, index) {
+                  //             return PredictionTile(
+                  //               placePrecidtions: placePrecidtionList[index],
+                  //             );
+                  //           },
+                  //           separatorBuilder: (BuildContext context, index) =>
+                  //               Padding(
+                  //             padding: const EdgeInsets.all(8.0),
+                  //             child: DividerWidget(),
+                  //           ),
+                  //           itemCount: placePrecidtionList.length,
+                  //           shrinkWrap: true,
+                  //           physics: ClampingScrollPhysics(),
+                  //         ),
+                  //       )
+                  //     : Container(),
+                  // Container(
+                  //   width: MediaQuery.of(context).size.width * 0.9,
+                  //   height: 45,
+                  //   child: ElevatedButton.icon(
+                  //     onPressed: () {
+                  //       // getCurrentLocation();
+                  //     },
+                  //     label: Text("Get my Current Location"),
+                  //     style: ElevatedButton.styleFrom(
+                  //       elevation: 0,
+                  //       primary: Constants.grey_color,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(10),
+                  //       ),
+                  //     ),
+                  //     icon: Icon(Icons.location_on),
+                  //   ),
+                  // ),
                   SizedBox(height: 10),
                   Terms(),
                 ],
@@ -390,3 +587,100 @@ class Terms extends StatelessWidget {
     );
   }
 }
+
+// class PredictionTile extends StatefulWidget {
+//   PredictionTile({Key? key, required this.placePrecidtions}) : super(key: key);
+
+//   final PlacePredictions placePrecidtions;
+
+//   @override
+//   _PredictionTileState createState() => _PredictionTileState();
+// }
+
+// class _PredictionTileState extends State<PredictionTile> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return FlatButton(
+//       padding: EdgeInsets.all(0),
+//       onPressed: () {
+//         getPlaceAddressDetails("${widget.placePrecidtions.place_id}", context);
+//       },
+//       child: Container(
+//         child: Column(
+//           children: [
+//             SizedBox(
+//               width: 10,
+//             ),
+//             Row(
+//               children: [
+//                 Icon(Icons.location_on_outlined),
+//                 SizedBox(
+//                   width: 14,
+//                 ),
+//                 Expanded(
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       SizedBox(
+//                         height: 8,
+//                       ),
+//                       Text(
+//                         "${widget.placePrecidtions.main_text}",
+//                         overflow: TextOverflow.ellipsis,
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           color: Constants.primary_color,
+//                         ),
+//                       ),
+//                       SizedBox(height: 2),
+//                       Text(
+//                         "${widget.placePrecidtions.secondary_text}",
+//                         overflow: TextOverflow.ellipsis,
+//                         style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.grey,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             SizedBox(
+//               width: 10,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// void getPlaceAddressDetails(String placeId, context) async {
+//   showDialog(
+//       context: context,
+//       builder: (BuildContext context) =>
+//           ProgressDialog(message: "Please Wait..."));
+//   String placDetailsUrl =
+//       "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
+
+//   var res = await RequestAssistant.getRequest(placDetailsUrl);
+
+//   // Navigator.pop(context);
+
+//   if (res == "failed") {
+//     return;
+//   } else {
+//     if (res['status'] == 'OK') {
+//       Address address = Address();
+
+//       address.placeName = res['result']['name'];
+//       address.placeId = placeId;
+//       address.latitude = res['result']['geometry']['location']['lat'];
+//       address.longitude = res['result']['geometry']['location']['lng'];
+
+//       Provider.of<AppData>(context, listen: false)
+//           .updatePickUpLocationAddress(address);
+//     }
+//   }
+// }

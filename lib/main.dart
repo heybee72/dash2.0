@@ -1,10 +1,11 @@
-
 import 'package:dash_store/global/global.dart';
 import 'package:dash_store/utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dataHandler/appData.dart';
 import 'splashScreen/splash_screen.dart';
 
 Future<void> main() async {
@@ -19,18 +20,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Dash Store',
-      debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            fontFamily: 'EuclidCircularB',
-            primaryColor: Constants.primary_color,
-            buttonTheme: ButtonThemeData(
-              buttonColor: Constants.secondary_color,
-              textTheme: ButtonTextTheme.primary,
-            ),
+    return ChangeNotifierProvider(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        title: 'Dash Store',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: 'EuclidCircularB',
+          primaryColor: Constants.primary_color,
+          buttonTheme: ButtonThemeData(
+            buttonColor: Constants.secondary_color,
+            textTheme: ButtonTextTheme.primary,
           ),
-      home: MySplashScreen(),
+        ),
+        home: MySplashScreen(),
+      ),
     );
   }
 }
