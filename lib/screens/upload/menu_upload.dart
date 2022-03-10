@@ -34,10 +34,10 @@ class _MenuUploadScreenState extends State<MenuUploadScreen> {
         backgroundColor: Colors.grey,
         title: Row(
           children: [
-            SizedBox(width: 55),
             Text('Add New Item Category', style: TextStyle(color: Colors.black)),
           ],
         ),
+        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
@@ -55,7 +55,7 @@ class _MenuUploadScreenState extends State<MenuUploadScreen> {
                 height: 10,
               ),
               Container(
-                width: 250,
+                width: 300,
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -68,7 +68,7 @@ class _MenuUploadScreenState extends State<MenuUploadScreen> {
                   onPressed: () {
                     takeImage(context);
                   },
-                  child: Text('Add New Item',
+                  child: Text('Add New Item Category',
                       style: TextStyle(color: Colors.white, fontSize: 20)),
                 ),
               ),

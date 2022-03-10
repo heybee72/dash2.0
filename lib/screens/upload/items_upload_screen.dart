@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_store/global/global.dart';
+import 'package:dash_store/model/menu.dart';
 import 'package:dash_store/utils/constants.dart';
 import 'package:dash_store/widgets/error_dialog.dart';
 import 'package:dash_store/widgets/progress_bar.dart';
@@ -10,7 +11,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storageRef;
 
 class ItemsUploadScreen extends StatefulWidget {
-  ItemsUploadScreen({Key? key}) : super(key: key);
+  final Menu? model;
+  ItemsUploadScreen({Key? key, this.model}) : super(key: key);
 
   @override
   State<ItemsUploadScreen> createState() => _ItemsUploadScreenState();
@@ -19,7 +21,8 @@ class ItemsUploadScreen extends StatefulWidget {
 class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
-  TextEditingController shortInfoController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
   TextEditingController titleController = TextEditingController();
 
   bool uploading = false;
@@ -31,13 +34,16 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.white,
         title: Row(
           children: [
-            SizedBox(width: 25),
-            Text('Add New Item Category', style: TextStyle(color: Colors.black)),
+            Text(
+              'Add New Item for ${widget.model!.menuTitle}',
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
           ],
         ),
+        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
@@ -143,11 +149,11 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
     });
   }
 
-  menuUploadFormScreen() {
+  itemsUploadFormScreen() {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
         title:
             Text('Uploading New Item', style: TextStyle(color: Colors.black)),
         leading: IconButton(
@@ -156,6 +162,7 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
             clearMenuUploadForm();
           },
         ),
+        centerTitle: true,
         actions: [
           Padding(
             padding: const EdgeInsets.all(4.0),
@@ -216,7 +223,7 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
                 style: TextStyle(color: Colors.black),
                 controller: titleController,
                 decoration: InputDecoration(
-                  hintText: 'Menu Title',
+                  hintText: 'Item Title',
                   hintStyle: TextStyle(color: Colors.grey),
                 ),
               ),
@@ -228,9 +235,24 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
               width: 250,
               child: TextField(
                 style: TextStyle(color: Colors.black),
-                controller: shortInfoController,
+                controller: descriptionController,
                 decoration: InputDecoration(
                   hintText: 'description',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.money, color: Colors.grey),
+            title: Container(
+              width: 250,
+              child: TextField(
+                keyboardType: TextInputType.number,
+                style: TextStyle(color: Colors.black),
+                controller: priceController,
+                decoration: InputDecoration(
+                  hintText: 'price',
                   hintStyle: TextStyle(color: Colors.grey),
                 ),
               ),
@@ -244,7 +266,8 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
   clearMenuUploadForm() {
     setState(() {
       titleController.clear();
-      shortInfoController.clear();
+      descriptionController.clear();
+      priceController.clear();
       imageXFile = null;
     });
   }
@@ -255,8 +278,9 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
     });
 
     if (imageXFile != null) {
-      if (shortInfoController.text.isNotEmpty ||
-          titleController.text.isNotEmpty) {
+      if (descriptionController.text.isNotEmpty ||
+          titleController.text.isNotEmpty ||
+          priceController.text.isNotEmpty) {
         setState(() {
           uploading = true;
         });
@@ -265,7 +289,7 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
         String downloadUrl = await uploadImage(File(imageXFile!.path));
 
         // Save info to firebase_storage
-        saveInfo(downloadUrl, shortInfoController.text, titleController.text);
+        saveInfo(downloadUrl);
       } else {
         setState(() {
           uploading = false;
@@ -290,7 +314,7 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
 
   uploadImage(mImageFile) async {
     storageRef.Reference reference =
-        storageRef.FirebaseStorage.instance.ref().child("menus");
+        storageRef.FirebaseStorage.instance.ref().child("items");
     storageRef.UploadTask uploadTask =
         reference.child(uniqueIDName + ".jpg").putFile(mImageFile);
 
@@ -301,31 +325,52 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
     return downloadURL;
   }
 
-  saveInfo(String downloadUrl, String shortInfo, String titleMenu) async {
+  saveInfo(String downloadUrl) async {
     final ref = FirebaseFirestore.instance
         .collection('stores')
         .doc(sharedPreferences!.getString('uid'))
-        .collection("menus");
+        .collection("menus")
+        .doc(widget.model!.menuID)
+        .collection("items");
 
     ref.doc(uniqueIDName).set({
-      "menuID": uniqueIDName,
+      "itemID": uniqueIDName,
+      "menuID": widget.model!.menuID,
       "storeUID": sharedPreferences!.getString('uid'),
-      "menuTitle": titleMenu,
-      "menuInfo": shortInfo,
-      "menuImage": downloadUrl,
+      "storeName": sharedPreferences!.getString('name'),
+      "itemTitle": titleController.text.toString(),
+      "itemDescription": descriptionController.text.toString(),
+      "price": int.parse(priceController.text),
+      "itemImage": downloadUrl,
       "publishedDate": DateTime.now().toString(),
       "status": "available",
-    });
-
-    clearMenuUploadForm();
-    setState(() {
-      uniqueIDName =DateTime.now().millisecondsSinceEpoch.toString();
-      uploading = false;
+    }).then((value) {
+      final itemRef = FirebaseFirestore.instance.collection("items");
+      itemRef.doc(uniqueIDName).set({
+        "itemID": uniqueIDName,
+        "menuID": widget.model!.menuID,
+        "storeUID": sharedPreferences!.getString('uid'),
+        "storeName": sharedPreferences!.getString('name'),
+        "itemTitle": titleController.text.toString(),
+        "itemDescription": descriptionController.text.toString(),
+        "price": int.parse(priceController.text),
+        "itemImage": downloadUrl,
+        "publishedDate": DateTime.now().toString(),
+        "status": "available",
+      });
+    }).then((value) {
+      clearMenuUploadForm();
+      setState(() {
+        uniqueIDName = DateTime.now().millisecondsSinceEpoch.toString();
+        uploading = false;
+      });
+    }).catchError((e) {
+      print(e);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return imageXFile == null ? defaultScreen() : menuUploadFormScreen();
+    return imageXFile == null ? defaultScreen() : itemsUploadFormScreen();
   }
 }

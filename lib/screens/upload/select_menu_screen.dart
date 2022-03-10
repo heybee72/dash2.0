@@ -5,23 +5,23 @@ import 'package:dash_store/widgets/info_design.dart';
 import 'package:dash_store/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
 
-class ViewMenuScreen extends StatefulWidget {
-  ViewMenuScreen({Key? key}) : super(key: key);
+class SelectMenuScreen extends StatefulWidget {
+  SelectMenuScreen({Key? key}) : super(key: key);
 
   @override
-  State<ViewMenuScreen> createState() => _ViewMenuScreenState();
+  State<SelectMenuScreen> createState() => _SelectMenuScreenState();
 }
 
-class _ViewMenuScreenState extends State<ViewMenuScreen> {
+class _SelectMenuScreenState extends State<SelectMenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[300],
         title: Row(
           children: [
-            Text('View Item Category', style: TextStyle(color: Colors.black)),
+            Text('Select a Category', style: TextStyle(color: Colors.black)),
           ],
         ),
         centerTitle: true,
@@ -36,7 +36,8 @@ class _ViewMenuScreenState extends State<ViewMenuScreen> {
           stream: FirebaseFirestore.instance
               .collection("stores")
               .doc(sharedPreferences!.getString("uid"))
-              .collection("menus").orderBy("publishedDate", descending: true)
+              .collection("menus")
+              .orderBy("publishedDate", descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             return !snapshot.hasData
@@ -46,12 +47,11 @@ class _ViewMenuScreenState extends State<ViewMenuScreen> {
                 : InkWell(
                     child: ListView.builder(
                         itemBuilder: (context, index) {
-                          Menu model = Menu.fromJson(
-                              snapshot.data!.docs[index].data()!
-                                  as Map<String, dynamic>);
+                          Menu model = Menu.fromJson(snapshot.data!.docs[index]
+                              .data()! as Map<String, dynamic>);
                           return Padding(
-                            padding: const EdgeInsets.only(
-                                left: 16.0, right: 16.0),
+                            padding:
+                                const EdgeInsets.only(left: 16.0, right: 16.0),
                             child: InfoDesignWidget(
                                 model: model, context: context),
                           );

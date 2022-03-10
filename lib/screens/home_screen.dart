@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'upload/items_upload_screen.dart';
 import 'upload/menu_upload.dart';
+import 'upload/select_menu_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -251,12 +252,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ItemsUploadScreen(),
+                            builder: (context) => SelectMenuScreen(),
                           ),
                         );
                       },
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * .8,
                         child: Card(
                           color: Constants.reddish.withGreen(1),
                           elevation: 1,
@@ -283,42 +284,42 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ViewMenuScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        child: Card(
-                          color: Colors.black.withOpacity(0.5),
-                          elevation: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "View ",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
-                                    Icon(Icons.remove_red_eye_rounded,
-                                        color: Colors.white, size: 20),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => ViewMenuScreen(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     width: MediaQuery.of(context).size.width * 0.3,
+                    //     child: Card(
+                    //       color: Colors.black.withOpacity(0.5),
+                    //       elevation: 1,
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.all(16.0),
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Row(
+                    //               children: [
+                    //                 Text(
+                    //                   "View ",
+                    //                   style: TextStyle(
+                    //                       color: Colors.white, fontSize: 18),
+                    //                 ),
+                    //                 Icon(Icons.remove_red_eye_rounded,
+                    //                     color: Colors.white, size: 20),
+                    //               ],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

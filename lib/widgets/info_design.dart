@@ -1,4 +1,5 @@
 import 'package:dash_store/model/menu.dart';
+import 'package:dash_store/screens/items_screen.dart';
 import 'package:flutter/material.dart';
 
 class InfoDesignWidget extends StatefulWidget {
@@ -16,6 +17,16 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: Colors.amber,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (c) => ItemsScreen(
+              model: widget.model,
+            ),
+          ),
+        );
+      },
       child: Card(
         margin: const EdgeInsets.all(10),
         child: ListTile(
