@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_rider/auth/auth_screen.dart';
 import 'package:dash_rider/global/global.dart';
+import 'package:dash_rider/screens/home_screen.dart';
 import 'package:dash_rider/utils/constants.dart';
 import 'package:dash_rider/widgets/custom_text_field.dart';
 import 'package:dash_rider/widgets/error_dialog.dart';
@@ -77,25 +78,28 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future readDataAndSetDataLocally(User currentUser) async {
-    print("data from firebase");
     await FirebaseFirestore.instance
-        .collection("stores")
+        .collection("riders")
         .doc(currentUser.uid)
         .get()
         .then((snapshot) async {
       if (snapshot.exists) {
         await sharedPreferences!.setString('uid', currentUser.uid);
         await sharedPreferences!
-            .setString('email', snapshot.data()!['storeEmail']);
+            .setString('email', snapshot.data()!['riderEmail']);
         await sharedPreferences!
-            .setString('name', snapshot.data()!['storeName']);
+            .setString('name', snapshot.data()!['riderName']);
         await sharedPreferences!
-            .setString('photoUrl', snapshot.data()!['storeImageUrl']);
+            .setString('photoUrl', snapshot.data()!['selfieImageUrl']);
         await sharedPreferences!
-            .setString('phone', snapshot.data()!['storePhone']);
+            .setString('phone', snapshot.data()!['riderPhone']);
+        await sharedPreferences!
+            .setString('address', snapshot.data()!['address']);
+        await sharedPreferences!
+            .setString('mot', snapshot.data()!['modeOfTransportation']);
         Navigator.pop(context);
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (c) => HomeScreen()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => HomeScreen()));
       } else {
         firebaseAuth.signOut();
         Navigator.pop(context);

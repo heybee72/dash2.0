@@ -52,6 +52,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       imageSelfieXFile;
     });
+    if (imageSelfieXFile != null) {
+      String fileName1 = DateTime.now().millisecondsSinceEpoch.toString();
+      fStorage.Reference reference1 = fStorage.FirebaseStorage.instance
+          .ref()
+          .child("riders_profile")
+          .child(fileName1);
+      fStorage.UploadTask uploadTask1 =
+          reference1.putFile(File(imageSelfieXFile!.path));
+      fStorage.TaskSnapshot taskSnapshot1 = await uploadTask1.whenComplete(() {
+        print('Uploaded selfie image');
+      });
+      await taskSnapshot1.ref.getDownloadURL().then((url) {
+        // selfieImageUrl = url;
+        // store url to shared preferences
+        sharedPreferences!.setString('selfieImageUrl', url);
+      });
+    }
   }
 
   Future<void> _getFrontImage() async {
@@ -60,6 +77,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       imageFrontXFile;
     });
+    if (imageFrontXFile != null) {
+      String fileName2 = DateTime.now().millisecondsSinceEpoch.toString();
+      fStorage.Reference reference2 = fStorage.FirebaseStorage.instance
+          .ref()
+          .child("riders")
+          .child(fileName2);
+      fStorage.UploadTask uploadTask2 =
+          reference2.putFile(File(imageFrontXFile!.path));
+      fStorage.TaskSnapshot taskSnapshot2 = await uploadTask2.whenComplete(() {
+        print('Uploaded front image');
+      });
+      await taskSnapshot2.ref.getDownloadURL().then((url2) {
+        // frontImageUrl = url;
+        sharedPreferences!.setString('frontImageUrl', url2);
+      });
+    }
   }
 
   Future<void> _getBackImage() async {
@@ -68,6 +101,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       imageBackXFile;
     });
+    if (imageBackXFile != null) {
+      String fileName3 = DateTime.now().millisecondsSinceEpoch.toString();
+      fStorage.Reference reference3 = fStorage.FirebaseStorage.instance
+          .ref()
+          .child("riders")
+          .child(fileName3);
+      fStorage.UploadTask uploadTask3 =
+          reference3.putFile(File(imageBackXFile!.path));
+      fStorage.TaskSnapshot taskSnapshot3 =
+          await uploadTask3.whenComplete(() {});
+      await taskSnapshot3.ref.getDownloadURL().then((url3) {
+        // backImageUrl = url;
+        sharedPreferences!.setString('backImageUrl', url3);
+      });
+    }
   }
 
   getCurrentLocation() async {
@@ -187,51 +235,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
     )
-        .then((auth) async {
-      String fileName1 = DateTime.now().millisecondsSinceEpoch.toString();
-      String fileName2 = DateTime.now().millisecondsSinceEpoch.toString();
-      String fileName3 = DateTime.now().millisecondsSinceEpoch.toString();
-      fStorage.Reference reference1 = fStorage.FirebaseStorage.instance
-          .ref()
-          .child("riders")
-          .child(fileName1);
-      fStorage.Reference reference2 = fStorage.FirebaseStorage.instance
-          .ref()
-          .child("riders")
-          .child(fileName2);
-
-      fStorage.Reference reference3 = fStorage.FirebaseStorage.instance
-          .ref()
-          .child("riders")
-          .child(fileName3);
-
-      fStorage.UploadTask uploadTask1 =
-          reference1.putFile(File(imageSelfieXFile!.path));
-      fStorage.UploadTask uploadTask2 =
-          reference2.putFile(File(imageFrontXFile!.path));
-      fStorage.UploadTask uploadTask3 =
-          reference3.putFile(File(imageBackXFile!.path));
-
-      fStorage.TaskSnapshot taskSnapshot1 =
-          await uploadTask1.whenComplete(() {});
-      fStorage.TaskSnapshot taskSnapshot2 =
-          await uploadTask2.whenComplete(() {});
-      fStorage.TaskSnapshot taskSnapshot3 =
-          await uploadTask3.whenComplete(() {});
-
-      await taskSnapshot1.ref.getDownloadURL().then((url) {
-        selfieImageUrl = url;
-        // save to database
-      });
-      await taskSnapshot2.ref.getDownloadURL().then((url2) {
-        frontImageUrl = url2;
-        // save to database
-      });
-      await taskSnapshot3.ref.getDownloadURL().then((url3) {
-        backImageUrl = url3;
-        // save to database
-      });
-
+        .then((auth) {
       currentUser = auth.user;
     }).catchError((error) {
       Navigator.pop(context);
@@ -247,7 +251,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (currentUser != null) {
       saveDataToFireStore(currentUser!).then((value) {
         Navigator.of(context).pop();
-
         Route newRoute = MaterialPageRoute(builder: (c) => HomeScreen());
         Navigator.pushReplacement(context, newRoute);
       });
@@ -260,23 +263,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "riderEmail": currentUser.email,
       "riderName": fullnameController.text.trim(),
       "riderPhone": phoneController.text.trim(),
-      "selfieImageUrl": selfieImageUrl,
-      "frontImageUrl": frontImageUrl,
-      "backImageUrl": backImageUrl,
+      "selfieImageUrl": await sharedPreferences!.getString('selfieImageUrl')!,
+      "frontImageUrl": await sharedPreferences!.getString('frontImageUrl')!,
+      "backImageUrl": await sharedPreferences!.getString('backImageUrl')!,
+      "modeOfTransportation": modeOfTransportation,
       "address": addressController.text,
       "status": "approved",
       "earnings": 0.00,
-      // "lat": position!.latitude,
-      // "lng": position!.longitude,
     });
 
     // save data locally
-    sharedPreferences = await SharedPreferences.getInstance();
+    // sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString('uid', currentUser.uid);
     await sharedPreferences!.setString('email', emailController.text);
     await sharedPreferences!.setString('name', fullnameController.text);
     await sharedPreferences!.setString('photoUrl', selfieImageUrl);
     await sharedPreferences!.setString('phone', phoneController.text);
+    await sharedPreferences!.setString('address', addressController.text);
+    await sharedPreferences!.setString('mot', modeOfTransportation);
   }
 
   bool _loading = false;
