@@ -55,7 +55,7 @@ class _SelectMenuScreenState extends State<SelectMenuScreen> {
                             child: InfoDesignWidget(
                                 model: model, context: context),
                           );
-                          ;
+                          
                         },
                         itemCount: snapshot.data!.docs.length),
                   );

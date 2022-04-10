@@ -178,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.6,
                         child: Card(
-                          color: Constants.reddish,
+                          color: Constants.secondary_color,
                           elevation: 1,
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -257,9 +257,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                       child: Container(
-                        width: MediaQuery.of(context).size.width * .8,
+                        width: MediaQuery.of(context).size.width * .95,
                         child: Card(
-                          color: Constants.reddish.withGreen(1),
+                          color: Constants.secondary_color,
                           elevation: 1,
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),

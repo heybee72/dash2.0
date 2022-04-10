@@ -100,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      Geolocator.requestPermission();
+      await Geolocator.requestPermission();
       return Future.error('Location services are disabled.');
     }
     permission = await Geolocator.checkPermission();

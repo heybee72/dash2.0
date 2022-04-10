@@ -55,7 +55,7 @@ class _ViewMenuScreenState extends State<ViewMenuScreen> {
                             child: InfoDesignWidget(
                                 model: model, context: context),
                           );
-                          ;
+                          
                         },
                         itemCount: snapshot.data!.docs.length),
                   );
