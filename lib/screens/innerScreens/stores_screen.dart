@@ -67,8 +67,8 @@ class _StoresState extends State<Stores> {
     });
   }
 
-  void getData() async {
-    await _getCurrentLocation();
+  void getData() async{
+   await _getCurrentLocation();
      Provider.of<StoreProvider>(context, listen: false).fetchStores();
   }
 
@@ -197,9 +197,9 @@ class _StoresState extends State<Stores> {
                         ],
                       ),
                       onPressed: () {
-                        // Navigator.pushNamedAndRemoveUntil(context,
-                        //     ChooseLocation.routeName, (route) => false);
-                        _getCurrentLocation();
+                        Navigator.pushNamedAndRemoveUntil(context,
+                            ChooseLocation.routeName, (route) => false);
+                        // _getCurrentLocation();
                       },
                     ),
                   ),
