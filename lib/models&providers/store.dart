@@ -50,7 +50,7 @@ class StoreProvider with ChangeNotifier {
       // Create a geoFirePoint
       GeoFirePoint center = geo.point(latitude: lat, longitude: lng);
       var collectionReference = _firestore.collection('stores');
-      double radius = 1550;
+      double radius = 5;
       String field = 'position';
 
       Stream<List<DocumentSnapshot>> stream = geo

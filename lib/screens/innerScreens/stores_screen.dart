@@ -11,6 +11,7 @@ import 'package:dash_user_app/widgets/no_delivery.dart';
 import 'package:dash_user_app/widgets/store_lists.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:geocoding/geocoding.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -30,6 +31,18 @@ class _StoresState extends State<Stores> {
   List<Placemark>? placemark;
   String _locationController = '';
   final geo = Geoflutterfire();
+
+  getLoc() async {
+    if (await sharedPreferences!.containsKey("address")) {
+      setState(() {
+        _locationController = "${sharedPreferences!.getString("address")}";
+      });
+    } else {
+      setState(() {
+        _locationController = "";
+      });
+    }
+  }
 
   late Permission permission;
   PermissionStatus permissionStatus = PermissionStatus.denied;
@@ -67,98 +80,99 @@ class _StoresState extends State<Stores> {
     });
   }
 
-  void getData() async{
-   await _getCurrentLocation();
-     Provider.of<StoreProvider>(context, listen: false).fetchStores();
+  void getData() async {
+    //  await locatePosition();
+    Provider.of<StoreProvider>(context, listen: false).fetchStores();
   }
 
   initState() {
     super.initState();
     getData();
+    getLoc();
   }
 
-  Future _getCurrentLocation() async {
-    _listenForPermission();
-    bool serviceEnabled;
-    bool permisionGranted = false;
-    LocationPermission permission;
+  // Future locatePosition() async {
+  //   _listenForPermission();
+  //   bool serviceEnabled;
+  //   bool permisionGranted = false;
+  //   LocationPermission permission;
 
-    var perm = await Geolocator.checkPermission();
+  //   var perm = await Geolocator.checkPermission();
 
-    permisionGranted = perm == LocationPermission.whileInUse ||
-        perm == LocationPermission.always;
+  //   permisionGranted = perm == LocationPermission.whileInUse ||
+  //       perm == LocationPermission.always;
 
-    if (!permisionGranted) {
-      await Geolocator.requestPermission();
-    }
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Geolocator.requestPermission();
-      
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
+  //   if (!permisionGranted) {
+  //     await Geolocator.requestPermission();
+  //   }
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Geolocator.requestPermission();
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
 
-    Position newPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return Future.error(
+  //         'Location permissions are permanently denied, we cannot request permissions.');
+  //   }
 
-    position = newPosition;
-    placemark = await placemarkFromCoordinates(
-      position!.latitude,
-      position!.longitude,
-    );
-    Placemark pMark = placemark![0];
-    String completeAddress =
-        '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} ${pMark.administrativeArea}, ${pMark.postalCode} ${pMark.country}';
+  //   Position newPosition = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
 
-    setState(() {
-      _locationController = completeAddress;
+  //   position = newPosition;
+  //   placemark = await placemarkFromCoordinates(
+  //     position!.latitude,
+  //     position!.longitude,
+  //   );
+  //   Placemark pMark = placemark![0];
+  //   String completeAddress =
+  //       '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea} ${pMark.administrativeArea}, ${pMark.postalCode} ${pMark.country}';
 
-      User? user = FirebaseAuth.instance.currentUser;
+  //   setState(() {
+  //     _locationController = completeAddress;
 
-      GeoFirePoint myLocation = geo.point(
-          latitude: position!.latitude, longitude: position!.longitude);
+  //     User? user = FirebaseAuth.instance.currentUser;
 
-      FirebaseFirestore.instance
-          .collection("users")
-          .where("id", isEqualTo: user!.uid)
-          .get()
-          .then((value) {
-        value.docs.forEach((element) {
-          element.reference.update({
-            "location": _locationController,
-            "lat": position!.latitude,
-            "lng": position!.longitude,
-            'position': myLocation.data
-          });
-        });
-      });
-    });
+  //     GeoFirePoint myLocation = geo.point(
+  //         latitude: position!.latitude, longitude: position!.longitude);
 
-    sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString('location', _locationController);
-    await sharedPreferences!.setDouble('lat', position!.latitude);
-    await sharedPreferences!.setDouble('lng', position!.longitude);
+  //     FirebaseFirestore.instance
+  //         .collection("users")
+  //         .where("id", isEqualTo: user!.uid)
+  //         .get()
+  //         .then((value) {
+  //       value.docs.forEach((element) {
+  //         element.reference.update({
+  //           "location": _locationController,
+  //           "lat": position!.latitude,
+  //           "lng": position!.longitude,
+  //           'position': myLocation.data
+  //         });
+  //       });
+  //     });
+  //   });
 
-    return newPosition;
-  }
+  //   sharedPreferences = await SharedPreferences.getInstance();
+  //   await sharedPreferences!.setString('location', _locationController);
+  //   await sharedPreferences!.setDouble('lat', position!.latitude);
+  //   await sharedPreferences!.setDouble('lng', position!.longitude);
+
+  //   return newPosition;
+  // }
 
   @override
   Widget build(BuildContext context) {
     final storeProvider = Provider.of<StoreProvider>(context);
     storeProvider.fetchStores();
     List<Store> storesList = storeProvider.stores;
-    print("this is the item after fetch ${storesList.length}");
+
 
     return Scaffold(
       body: Padding(
@@ -179,19 +193,14 @@ class _StoresState extends State<Stores> {
                           Icon(Icons.location_on,
                               color: Colors.black, size: 16),
                           SizedBox(width: 5.0),
-                          _locationController != ''
-                              ? _locationController.length > 20
-                                  ? Text(
-                                      "${_locationController.substring(0, 18)}...",
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.black))
-                                  : Text("${_locationController}",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.black))
-                              : Text('Select Location',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.black)),
+                         Text(
+                          Provider.of<AppData>(context).pickUpLocation != null
+                              ? "${Provider.of<AppData>(context).pickUpLocation!.placeName!}"
+                              : "No Location Found",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: Constants.grey_color, fontSize: 14.0),
+                        ),
                           Icon(Icons.keyboard_arrow_down_rounded,
                               color: Colors.black),
                         ],

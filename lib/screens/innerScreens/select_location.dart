@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dash_user_app/assistants/assistant_methods.dart';
 import 'package:dash_user_app/assistants/request_assistants.dart';
 import 'package:dash_user_app/dataHandler/app_data.dart';
+import 'package:dash_user_app/global/global.dart';
 import 'package:dash_user_app/models/address.dart';
 import 'package:dash_user_app/models/place_predictions.dart';
 import 'package:dash_user_app/utils/config_maps.dart';
@@ -178,16 +179,9 @@ class _ChooseLocationState extends State<ChooseLocation> {
               ListTile(
                 contentPadding: const EdgeInsets.only(top: 14.0),
                 onTap: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  String? prefCat = prefs.getString('prefCat');
-                  prefCat == null
-                      ? ''
-                      // Navigator.pushNamedAndRemoveUntil(
-                      //     context, ChooseCategory.idScreen, (route) => false)
-                      : Navigator.of(context).push(PageTransition(
-                          child: BottomNavScreen(),
-                          type: PageTransitionType.rightToLeftWithFade));
+                    // Navigator.of(context).push(PageTransition(
+                    //       child: BottomNavScreen(),
+                    //       type: PageTransitionType.rightToLeftWithFade));
                 },
                 title: Padding(
                   padding: const EdgeInsets.only(left: 30.0),
@@ -365,9 +359,9 @@ void getPlaceAddressDetails(String placeId, context) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? prefCat = prefs.getString('prefCat');
       prefCat == null
-          ? 
-          Navigator.pushNamed(
-              context, ChooseCategory.routeName)
+          ? null
+          // Navigator.pushNamed(
+          //     context, ChooseCategory.routeName)
           : Navigator.of(context).push(PageTransition(
               child: BottomNavScreen(),
               type: PageTransitionType.rightToLeftWithFade));

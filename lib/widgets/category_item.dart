@@ -1,6 +1,8 @@
+import 'package:dash_user_app/global/global.dart';
 import 'package:dash_user_app/screens/bottom_nav_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/constants.dart';
 
@@ -21,6 +23,9 @@ class _CategoryItemState extends State<CategoryItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
+       
+      //  await  sharedPreferences!.setString("prefCat", widget.name);
+       
         Navigator.of(context).push(PageTransition(
             child: BottomNavScreen(),
             type: PageTransitionType.rightToLeftWithFade));
