@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:dash_user_app/assistants/assistant_methods.dart';
-import 'package:dash_user_app/assistants/request_assistants.dart';
+import 'package:dash_user_app/new_models/request_assistants.dart';
 import 'package:dash_user_app/dataHandler/app_data.dart';
 import 'package:dash_user_app/global/global.dart';
 import 'package:dash_user_app/models/address.dart';
 import 'package:dash_user_app/models/place_predictions.dart';
+import 'package:dash_user_app/new_provider/store_provider.dart';
 import 'package:dash_user_app/utils/config_maps.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:dash_user_app/widgets/divider.dart';
@@ -59,7 +60,6 @@ class _ChooseLocationState extends State<ChooseLocation> {
 
     String address =
         await AssistantMethods.searchCordinateAddress(position, context);
-    // print("this is your address ::" + address);
   }
 
   static final CameraPosition _kGooglePlex = CameraPosition(
@@ -100,6 +100,15 @@ class _ChooseLocationState extends State<ChooseLocation> {
                   padding: const EdgeInsets.all(8.0),
                   child: Stack(
                     children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 7.0),
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_ios, size: 16),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
                       Container(
                         margin: EdgeInsets.only(top: 20.0),
                         alignment: Alignment.center,
@@ -179,9 +188,9 @@ class _ChooseLocationState extends State<ChooseLocation> {
               ListTile(
                 contentPadding: const EdgeInsets.only(top: 14.0),
                 onTap: () async {
-                    // Navigator.of(context).push(PageTransition(
-                    //       child: BottomNavScreen(),
-                    //       type: PageTransitionType.rightToLeftWithFade));
+                  // Navigator.of(context).push(PageTransition(
+                  //       child: BottomNavScreen(),
+                  //       type: PageTransitionType.rightToLeftWithFade));
                 },
                 title: Padding(
                   padding: const EdgeInsets.only(left: 30.0),
@@ -211,8 +220,8 @@ class _ChooseLocationState extends State<ChooseLocation> {
                       Padding(
                         padding: const EdgeInsets.only(left: 20.0),
                         child: Text(
-                          Provider.of<AppData>(context).pickUpLocation != null
-                              ? "${Provider.of<AppData>(context).pickUpLocation!.placeName!}"
+                          Provider.of<AppData>(context).deliveryLocation != null
+                              ? "${Provider.of<AppData>(context).deliveryLocation!.placeName!}"
                               : "No Location Found",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -246,9 +255,6 @@ class _ChooseLocationState extends State<ChooseLocation> {
       } else {
         if (res['status'] == "OK") {
           var predictions = res['predictions'];
-
-          print("predictions");
-          print(predictions);
 
           var placesList = (predictions as List)
               .map((e) => PlacePredictions.fromJson(e))
@@ -340,12 +346,13 @@ void getPlaceAddressDetails(String placeId, context) async {
 
   var res = await RequestAssistant.getRequest(placDetailsUrl);
 
-  // Navigator.pop(context);
-
   if (res == "failed") {
+    Navigator.pop(context);
     return;
   } else {
     if (res['status'] == 'OK') {
+      Navigator.pop(context);
+
       Address address = Address();
 
       address.placeName = res['result']['name'];
@@ -353,15 +360,22 @@ void getPlaceAddressDetails(String placeId, context) async {
       address.latitude = res['result']['geometry']['location']['lat'];
       address.longitude = res['result']['geometry']['location']['lng'];
 
-      Provider.of<AppData>(context, listen: false)
-          .updatePickUpLocationAddress(address);
-
+      // store in shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('selected_location', address.placeName.toString());
+      prefs.setDouble('selected_lat', address.latitude!.toDouble());
+      prefs.setDouble('selected_lng', address.longitude!.toDouble());
+
+      Provider.of<AppData>(context, listen: false)
+          .updateDeliveryLocationAddress(address);
+
       String? prefCat = prefs.getString('prefCat');
+
+    //  await Provider.of<StoreModels>(context).fetchAndSetStore(
+    //       cat: prefCat, lat: address.latitude, lng: address.longitude);
+
       prefCat == null
-          ? null
-          // Navigator.pushNamed(
-          //     context, ChooseCategory.routeName)
+          ? Navigator.pushNamed(context, ChooseCategory.routeName)
           : Navigator.of(context).push(PageTransition(
               child: BottomNavScreen(),
               type: PageTransitionType.rightToLeftWithFade));

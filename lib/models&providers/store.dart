@@ -63,9 +63,7 @@ class StoreProvider with ChangeNotifier {
         _stores = [];
         documentList.forEach((DocumentSnapshot document) {
           final data = document.data() as Map<String, dynamic>;
-          // final GeoPoint point = data['position']['geopoint'];
-          // print("listen to data::::");
-          // print(data);
+
           _stores.insert(
               0,
               Store(

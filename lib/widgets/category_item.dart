@@ -23,9 +23,10 @@ class _CategoryItemState extends State<CategoryItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-       
-      //  await  sharedPreferences!.setString("prefCat", widget.name);
-       
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        var prefCat = prefs.setString('prefCat', widget.name);
+        // fetch the data from the server here
+
         Navigator.of(context).push(PageTransition(
             child: BottomNavScreen(),
             type: PageTransitionType.rightToLeftWithFade));

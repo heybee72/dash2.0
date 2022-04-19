@@ -1,12 +1,14 @@
 import 'package:alt_sms_autofill/alt_sms_autofill.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_user_app/global/global.dart';
+import 'package:dash_user_app/new_models/signup_model.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:http/http.dart' as http;
 
 import '../bottom_nav_screen.dart';
 import 'register_screen.dart';
@@ -51,6 +53,7 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
         verificationFailed: (FirebaseAuthException error) async {
           if (_wrongOtp == false) {
             setState(() {
+              _resentCode = true;
               _wrongOtp = true;
             });
           }
@@ -65,7 +68,6 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
         await _auth
             .signInWithCredential(credential)
             .then((value) {
-              print(value.user!.uid);
               if (value.additionalUserInfo!.isNewUser) {
                 Navigator.pushReplacement(
                   context,
@@ -92,11 +94,14 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
 
                     await sharedPreferences!
                         .setString("email", snapshot.data()!["email"]);
-                    List<String> userCartList = snapshot.data()!["userCart"].cast<String>();
+                    List<String> userCartList =
+                        snapshot.data()!["userCart"].cast<String>();
                     await sharedPreferences!
                         .setStringList("userCart", userCartList);
                   }
                 });
+               
+
                 Navigator.pushNamed(context, BottomNavScreen.routeName);
               }
             })
@@ -185,6 +190,7 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
                   onCompleted: (String value) {
                     setState(() {
                       _wrongOtp = false;
+                      _resentCode = false;
                     });
 
                     // PhoneAuthCredential phoneAuthCredential =
@@ -260,12 +266,18 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
                               style:
                                   TextStyle(color: Constants.secondary_color)),
                           onPressed: () async {
+                            print(_resentCode);
+                            setState(() {
+                              _resentCode = !_resentCode;
+                            });
                             _verifyPhoneNumber();
                           }),
                     ],
                   );
                 }
-                return Text('OTP will be sent in ${time.sec} secs');
+                return _resentCode
+                    ? Text('OTP will be sent in ${time.sec} secs')
+                    : Text('OTP will be sent in ${time.sec} secs');
               },
             ),
           ],

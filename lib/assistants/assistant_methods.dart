@@ -12,7 +12,7 @@ import 'package:geolocator/geolocator.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'request_assistants.dart';
+import '../new_models/request_assistants.dart';
 
 class AssistantMethods {
   static Future<String> searchCordinateAddress(
@@ -43,7 +43,7 @@ class AssistantMethods {
       userPickupAddress.locality = st4;
 
       Provider.of<AppData>(context, listen: false)
-          .updatePickUpLocationAddress(userPickupAddress);
+          .updateDeliveryLocationAddress(userPickupAddress);
     }
 
     return placeAddress;

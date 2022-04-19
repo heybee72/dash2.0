@@ -4,6 +4,7 @@ import 'package:dash_user_app/screens/innerScreens/store_details.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'dataHandler/app_data.dart';
@@ -12,6 +13,8 @@ import 'models&providers/cart.dart';
 import 'models&providers/item_category.dart';
 import 'models&providers/item.dart';
 import 'models&providers/store.dart';
+import 'new_models/data_class.dart';
+import 'new_provider/store_provider.dart';
 import 'screens/auth/auth_state_screen.dart';
 import 'screens/auth/choose_path.dart';
 import 'screens/auth/forgot_password_screen.dart';
@@ -38,13 +41,62 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Permission permission;
+  PermissionStatus permissionStatus = PermissionStatus.denied;
+  void listenForPermission() async {
+    final status = await Permission.location.status;
+    setState(() {
+      permissionStatus = status;
+    });
+    switch (status) {
+      case PermissionStatus.denied:
+        requestForPermissions();
+        break;
+
+      case PermissionStatus.restricted:
+        Navigator.pop(context);
+
+        break;
+      case PermissionStatus.limited:
+        Navigator.pop(context);
+
+        break;
+      case PermissionStatus.permanentlyDenied:
+        Navigator.pop(context);
+
+        break;
+      case PermissionStatus.granted:
+        break;
+    }
+  }
+
+  Future<void> requestForPermissions() async {
+    final status = await Permission.location.request();
+    setState(() {
+      permissionStatus = status;
+    });
+  }
+
+  initState() {
+    super.initState();
+    listenForPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => DataClass()),
+        ChangeNotifierProvider<StoreModels>(create: (_) => StoreModels()),
+        
         ChangeNotifierProvider(create: (ctx) => StoreProvider()),
         ChangeNotifierProvider(create: (ctx) => ItemCategoryProvider()),
         ChangeNotifierProvider(create: (ctx) => ItemProvider()),

@@ -4,12 +4,12 @@ import 'package:dash_user_app/models/category.dart';
 import 'package:flutter/cupertino.dart';
 
 class AppData extends ChangeNotifier {
-  Address? pickUpLocation, dropOffLocation;
+  Address? deliveryLocation;
 
   Category? selectedCategory;
 
-  void updatePickUpLocationAddress(Address pickUpAddress) {
-    pickUpLocation = pickUpAddress;
+  void updateDeliveryLocationAddress(Address deliveryAddress) {
+    deliveryLocation = deliveryAddress;
     notifyListeners();
   }
 
@@ -18,8 +18,5 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void updateDropOffLocationAddress(Address dropOffAddress) {
-  //   dropOffLocation = dropOffAddress;
-  //   notifyListeners();
-  // }
+
 }

@@ -10,5 +10,6 @@ class Constants {
   static const String shared_preference_key_user = "user";
   static const String shared_preference_key_city = "city";
   static const String shared_preference_key_category = "category";
-}
 
+  static const String base_url = 'https://dash.toptechng.com/api';
+}

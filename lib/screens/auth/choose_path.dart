@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'get_phone_number_screen.dart';
 
-
 class ChoosePath extends StatefulWidget {
   static const routeName = 'landing_page';
   const ChoosePath({Key? key}) : super(key: key);
@@ -21,10 +20,7 @@ class _ChoosePathState extends State<ChoosePath> {
   Future signInAnon() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     UserCredential user = await _auth.signInAnonymously();
-    print("signed in as ${user.user!.uid}");
-    // print("signed in as ${user.user!.isAnonymous}");
     prefs.setBool('isAnonymous', user.user!.isAnonymous);
-    // NOTE:: Store the user anonymous status in shared preferences
     return user;
   }
 

@@ -1,16 +1,15 @@
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:dash_user_app/utils/custom_sized_box.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class NoDelivery extends StatefulWidget {
-  NoDelivery({Key? key}) : super(key: key);
+class SelectLocation extends StatefulWidget {
+  SelectLocation({Key? key}) : super(key: key);
+
   @override
-  _NoDeliveryState createState() => _NoDeliveryState();
+  _SelectLocationState createState() => _SelectLocationState();
 }
 
-class _NoDeliveryState extends State<NoDelivery> {
-
+class _SelectLocationState extends State<SelectLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,18 +32,25 @@ class _NoDeliveryState extends State<NoDelivery> {
                   child: Image.asset("assets/grey_big_location_pin.png"),
                 ),
                 CustomSizedBox(height: 34),
-                Text(
-                  'Oops!  we don’t deliver here yet.',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
+                Center(
+                  child: Text(
+                    'Select a Location and Category',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'We’re expanding fast and will get here soon!',
-                  style: TextStyle(
-                    fontSize: 15,
+                SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Location and Category helps us determine the closest store near you',
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],

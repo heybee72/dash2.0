@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_user_app/global/global.dart';
+import 'package:dash_user_app/new_models/data_class.dart';
+import 'package:dash_user_app/new_models/signup_model.dart';
 import 'package:dash_user_app/services/global_methods.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -46,26 +49,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       final User user = _auth.currentUser!;
       final _uid = user.uid;
-      FirebaseFirestore.instance.collection('users').doc(_uid).set({
-        'id': _uid,
-        'firstName': _firstName.trim(),
-        'lastName': _lastName.trim(),
-        'email': _email.toLowerCase().trim(),
-        'phone': widget.phoneNumber.toString().trim(),
-        'joinedDate': formattedDate,
-        'createdAt': Timestamp.now(),
-        'userCart': ["garbageValue"],
-      });
+      
+      SignUpBody signupBody = SignUpBody(
+        firstName: _firstName.trim(),
+        lastName: _lastName.trim(),
+        email: _email.toLowerCase().trim(),
+        password: _password.trim(),
+        phone: widget.phoneNumber.toString().trim(),
+        uid: _uid,
+      );
+      var provider = Provider.of<DataClass>(context, listen: false);
+      await provider.postData(signupBody);
+      if (provider.isBack) {
+        FirebaseFirestore.instance.collection('users').doc(_uid).set({
+          'id': _uid,
+          'firstName': _firstName.trim(),
+          'lastName': _lastName.trim(),
+          'email': _email.toLowerCase().trim(),
+          'phone': widget.phoneNumber.toString().trim(),
+          'joinedDate': formattedDate,
+          'createdAt': Timestamp.now(),
+          'userCart': ["garbageValue"],
+        });
 
-      sharedPreferences = await SharedPreferences.getInstance();
-      await sharedPreferences!.setString('firstName', _firstName.trim());
-      await sharedPreferences!.setString('lastName', _lastName.trim());
-      await sharedPreferences!.setString('email', _email.toLowerCase().trim());
-      await sharedPreferences!
-          .setString('phone', widget.phoneNumber.toString().trim());
+        sharedPreferences = await SharedPreferences.getInstance();
+        await sharedPreferences!.setString('firstName', _firstName.trim());
+        await sharedPreferences!.setString('lastName', _lastName.trim());
+        await sharedPreferences!
+            .setString('email', _email.toLowerCase().trim());
+        await sharedPreferences!
+            .setString('phone', widget.phoneNumber.toString().trim());
 
-      await sharedPreferences!.setString('uid', _uid);
-      await sharedPreferences!.setStringList('userCart', ['garbageValue']);
+        await sharedPreferences!.setString('uid', _uid);
+        await sharedPreferences!.setStringList('userCart', ['garbageValue']);
+      }
+
+      // push details to server
 
       Navigator.canPop(context) ? Navigator.pop(context) : null;
     } catch (e) {

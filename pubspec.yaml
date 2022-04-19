@@ -61,6 +61,7 @@ dependencies:
   permission_handler: ^9.2.0
   flutter_paystack: ^1.0.5+1
   uuid: ^3.0.6
+  flutter_spinkit:
   
 
 
