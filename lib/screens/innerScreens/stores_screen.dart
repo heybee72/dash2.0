@@ -7,6 +7,7 @@ import 'package:dash_user_app/new_models/store_model.dart';
 import 'package:dash_user_app/new_provider/store_provider.dart';
 import 'package:dash_user_app/screens/innerScreens/choose_category.dart';
 import 'package:dash_user_app/screens/innerScreens/select_location.dart';
+import 'package:dash_user_app/screens/innerScreens/store_details.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:dash_user_app/utils/set_pref.dart';
 import 'package:dash_user_app/widgets/empty_cart.dart';
@@ -120,85 +121,103 @@ class _StoresState extends State<Stores> {
                                                 storeModel.storeModels.length,
                                             itemBuilder: (BuildContext context,
                                                 int index) {
-                                              return Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 16.0,
-                                                    vertical: 8.0),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 150,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  child: Stack(
-                                                    children: <Widget>[
-                                                      Image.network(
-                                                        '${storeModel.storeModels[index].storeImage}',
-                                                        fit: BoxFit.cover,
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                      ),
-                                                      Opacity(
-                                                        opacity: .6,
-                                                        child: Container(
-                                                          color: Constants
-                                                              .primary_color,
+                                              return InkWell(
+                                                onTap: () {
+                                                
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          StoreDetailScreen
+                                                              .routeName,
+                                                          arguments: storeModel
+                                                              .storeModels[
+                                                                  index]
+                                                              .uid);
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal: 16.0,
+                                                      vertical: 8.0),
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  height: 150,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    child: Stack(
+                                                      children: <Widget>[
+                                                        Image.network(
+                                                          '${storeModel.storeModels[index].storeImage}',
+                                                          fit: BoxFit.cover,
+                                                          width: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width,
                                                         ),
-                                                      ),
-                                                      Center(
-                                                        heightFactor: 5,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 16.0,
-                                                                  right: 16.0),
+                                                        Opacity(
+                                                          opacity: .6,
+                                                          child: Container(
+                                                            color: Constants
+                                                                .primary_color,
+                                                          ),
+                                                        ),
+                                                        Center(
+                                                          heightFactor: 5,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 16.0,
+                                                                    right:
+                                                                        16.0),
+                                                            child: Text(
+                                                              "${storeModel.storeModels[index].storeName}",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize:
+                                                                      18.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Center(
+                                                          heightFactor: 35,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 16.0),
+                                                            child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: []),
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          bottom: 5.0,
+                                                          right: 10.0,
                                                           child: Text(
-                                                            "${storeModel.storeModels[index].storeName}",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
+                                                            "30-35 min(s)",
                                                             style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 18.0),
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                      Center(
-                                                        heightFactor: 35,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 16.0),
-                                                          child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: []),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        bottom: 5.0,
-                                                        right: 10.0,
-                                                        child: Text(
-                                                          "30-35 min(s)",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );
