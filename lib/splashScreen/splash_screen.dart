@@ -44,8 +44,8 @@ class _MySplashScreenState extends State<MySplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/dash_logo_dark.png'),
-              SizedBox(height: 20),
+              Image.asset('assets/dash_logo_dark.png', width: 200),
+              SizedBox(height: 120),
               Padding(
                 padding: EdgeInsets.only(left: 30, right: 30),
                 child: Text(

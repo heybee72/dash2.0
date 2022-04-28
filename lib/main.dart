@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dataHandler/appData.dart';
+import 'new_model/data_class.dart';
 import 'splashScreen/splash_screen.dart';
 
 Future<void> main() async {
@@ -20,20 +21,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => AppData(),
-      child: MaterialApp(
-        title: 'Dash Store',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'EuclidCircularB',
-          primaryColor: Constants.primary_color,
-          buttonTheme: ButtonThemeData(
-            buttonColor: Constants.secondary_color,
-            textTheme: ButtonTextTheme.primary,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DataClass()),
+      ],
+      child: ChangeNotifierProvider(
+        create: (context) => AppData(),
+        child: MaterialApp(
+          title: 'Dash Store',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            fontFamily: 'EuclidCircularB',
+            primaryColor: Constants.primary_color,
+            buttonTheme: ButtonThemeData(
+              buttonColor: Constants.secondary_color,
+              textTheme: ButtonTextTheme.primary,
+            ),
           ),
+          home: MySplashScreen(),
         ),
-        home: MySplashScreen(),
       ),
     );
   }

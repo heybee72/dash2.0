@@ -8,6 +8,7 @@ import 'package:dash_store/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storageRef;
+import 'package:http/http.dart' as http;
 
 class MenuUploadScreen extends StatefulWidget {
   MenuUploadScreen({Key? key}) : super(key: key);
@@ -34,7 +35,8 @@ class _MenuUploadScreenState extends State<MenuUploadScreen> {
         backgroundColor: Colors.grey,
         title: Row(
           children: [
-            Text('Add New Item Category', style: TextStyle(color: Colors.black)),
+            Text('Add New Item Category',
+                style: TextStyle(color: Colors.black)),
           ],
         ),
         centerTitle: true,
@@ -302,26 +304,42 @@ class _MenuUploadScreenState extends State<MenuUploadScreen> {
   }
 
   saveInfo(String downloadUrl, String shortInfo, String titleMenu) async {
-    final ref = FirebaseFirestore.instance
-        .collection('stores')
-        .doc(sharedPreferences!.getString('uid'))
-        .collection("menus");
-
-    ref.doc(uniqueIDName).set({
-      "menuID": uniqueIDName,
-      "storeUID": sharedPreferences!.getString('uid'),
-      "menuTitle": titleMenu,
-      "menuInfo": shortInfo,
-      "menuImage": downloadUrl,
-      "publishedDate": DateTime.now().toString(),
-      "status": "available",
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://dash.toptechng.com/api/category/add'));
+    request.fields.addAll({
+      'uid': sharedPreferences!.getString('uid').toString(),
+      'title': titleMenu,
+      'image': downloadUrl,
+      'itemCatId': uniqueIDName,
+      'description': shortInfo
     });
 
-    clearMenuUploadForm();
-    setState(() {
-      uniqueIDName =DateTime.now().millisecondsSinceEpoch.toString();
-      uploading = false;
-    });
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      final ref = FirebaseFirestore.instance
+          .collection('stores')
+          .doc(sharedPreferences!.getString('uid'))
+          .collection("menus");
+
+      ref.doc(uniqueIDName).set({
+        "menuID": uniqueIDName,
+        "storeUID": sharedPreferences!.getString('uid'),
+        "menuTitle": titleMenu,
+        "menuInfo": shortInfo,
+        "menuImage": downloadUrl,
+        "publishedDate": DateTime.now().toString(),
+        "status": "available",
+      });
+
+      clearMenuUploadForm();
+      setState(() {
+        uniqueIDName = DateTime.now().millisecondsSinceEpoch.toString();
+        uploading = false;
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   @override

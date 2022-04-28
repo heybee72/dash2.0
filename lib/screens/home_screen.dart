@@ -2,9 +2,9 @@ import 'package:dash_store/auth/auth_screen.dart';
 import 'package:dash_store/global/global.dart';
 import 'package:dash_store/screens/upload/view_menu_screen.dart';
 import 'package:dash_store/utils/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'upload/items_upload_screen.dart';
 import 'upload/menu_upload.dart';
 import 'upload/select_menu_screen.dart';
 
@@ -47,8 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.black, fontSize: 30),
         ),
         Transform.rotate(
-            angle: 320,
-            child: Icon(Icons.nightlight, color: Color(0XFFFEC051), size: 20)),
+          angle: 320,
+          child: Icon(Icons.nightlight, color: Color(0XFFFEC051), size: 20),
+        ),
       ],
     );
   }
@@ -64,7 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(
-              onTap: () {
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AuthScreen()),
@@ -105,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     Text(
+                      // "",
                       "Welcome to ${sharedPreferences!.getString('name')!}",
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),

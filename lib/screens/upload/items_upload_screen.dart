@@ -9,6 +9,7 @@ import 'package:dash_store/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storageRef;
+import 'package:http/http.dart' as http;
 
 class ItemsUploadScreen extends StatefulWidget {
   final Menu? model;
@@ -326,27 +327,29 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
   }
 
   saveInfo(String downloadUrl) async {
-    final ref = FirebaseFirestore.instance
-        .collection('stores')
-        .doc(sharedPreferences!.getString('uid'))
-        .collection("menus")
-        .doc(widget.model!.menuID)
-        .collection("items");
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://dash.toptechng.com/api/item/add'));
+    request.fields.addAll({
+      'storeId': sharedPreferences!.getString('uid').toString(),
+      'itemName': titleController.text.toString(),
+      'itemCatId': widget.model!.menuID.toString(),
+      'itemImage': downloadUrl,
+      'price': priceController.text,
+      'itemDescription': descriptionController.text.toString()
+    });
 
-    ref.doc(uniqueIDName).set({
-      "itemID": uniqueIDName,
-      "menuID": widget.model!.menuID,
-      "storeUID": sharedPreferences!.getString('uid'),
-      "storeName": sharedPreferences!.getString('name'),
-      "itemTitle": titleController.text.toString(),
-      "itemDescription": descriptionController.text.toString(),
-      "price": int.parse(priceController.text),
-      "itemImage": downloadUrl,
-      "publishedDate": DateTime.now().toString(),
-      "status": "available",
-    }).then((value) {
-      final itemRef = FirebaseFirestore.instance.collection("items");
-      itemRef.doc(uniqueIDName).set({
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      final ref = FirebaseFirestore.instance
+          .collection('stores')
+          .doc(sharedPreferences!.getString('uid'))
+          .collection("menus")
+          .doc(widget.model!.menuID)
+          .collection("items");
+
+      ref.doc(uniqueIDName).set({
         "itemID": uniqueIDName,
         "menuID": widget.model!.menuID,
         "storeUID": sharedPreferences!.getString('uid'),
@@ -357,16 +360,32 @@ class _ItemsUploadScreenState extends State<ItemsUploadScreen> {
         "itemImage": downloadUrl,
         "publishedDate": DateTime.now().toString(),
         "status": "available",
+      }).then((value) {
+        final itemRef = FirebaseFirestore.instance.collection("items");
+        itemRef.doc(uniqueIDName).set({
+          "itemID": uniqueIDName,
+          "menuID": widget.model!.menuID,
+          "storeUID": sharedPreferences!.getString('uid'),
+          "storeName": sharedPreferences!.getString('name'),
+          "itemTitle": titleController.text.toString(),
+          "itemDescription": descriptionController.text.toString(),
+          "price": int.parse(priceController.text),
+          "itemImage": downloadUrl,
+          "publishedDate": DateTime.now().toString(),
+          "status": "available",
+        });
+      }).then((value) {
+        clearMenuUploadForm();
+        setState(() {
+          uniqueIDName = DateTime.now().millisecondsSinceEpoch.toString();
+          uploading = false;
+        });
+      }).catchError((e) {
+        print(e);
       });
-    }).then((value) {
-      clearMenuUploadForm();
-      setState(() {
-        uniqueIDName = DateTime.now().millisecondsSinceEpoch.toString();
-        uploading = false;
-      });
-    }).catchError((e) {
-      print(e);
-    });
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 
   @override

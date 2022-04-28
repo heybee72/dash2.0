@@ -27,8 +27,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:location/location.dart';
-import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
@@ -53,6 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   );
 
   LatLng _initialPositon = LatLng(0.00, 0.0000);
+
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(child: Text("Food"), value: "Food"),
@@ -67,6 +66,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
 
+  // Position? position;
+  // List<Placemark>? placemark;
   String storeImageUrl = '';
   final geo = Geoflutterfire();
   String lat = '';
@@ -80,6 +81,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       imageXFile;
     });
+  }
+
+  getCurrentLocation() async {
+    bool serviceEnabled;
+    bool permisionGranted = false;
+    LocationPermission permission;
+
+    var perm = await Geolocator.checkPermission();
+
+    permisionGranted = perm == LocationPermission.whileInUse ||
+        perm == LocationPermission.always;
+
+    if (!permisionGranted) {
+      Geolocator.requestPermission();
+    }
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.requestPermission();
+      return Future.error('Location services are disabled.');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
   }
 
   Future<void> formValidation() async {
@@ -203,77 +238,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
     GeoFirePoint myLocation =
         geo.point(latitude: double.parse(lat), longitude: double.parse(lng));
 
-    try {
-      // SignUpBody signupBody = SignUpBody(
-      //   storeEmail: ,
-      //   category: ,
-      //   lat: double.parse(lat),
-      //   lng: double.parse(lng),
-      //   password: ,
-      //   storeImage: ,
-      //   storeLocation: ,
-      //   storeName:,
-      //   storePhone: ,
-      //   storeTags: 'amala',
-      //   uid:
-      // );
-      // var provider = Provider.of<DataClass>(context, listen: false);
-      // await provider.postData(signupBody);
-      // if (provider.isBack) {
-      var request = http.MultipartRequest(
-          'POST', Uri.parse('https://dash.toptechng.com/api/store/register'));
-      request.fields.addAll({
-        'storeName': _storeNameController.text.trim(),
-        'storeEmail': _emailController.text.trim(),
-        'password': _passwordController.text.trim(),
-        'storePhone': _phoneController.text.trim(),
-        'lng': lng,
-        'lat': lat,
-        'storeLocation': origCtrl.text,
-        'storeImage': storeImageUrl,
-        'storeTags': 'amala',
-        'category': selectedValue,
-        'uid': currentUser.uid,
+    SignUpBody signupBody = SignUpBody(
+      storeEmail: _emailController.text.trim(),
+      category: selectedValue,
+      lat: double.parse(lat),
+      lng: double.parse(lng),
+      password: _passwordController.text.trim(),
+      storeImage: storeImageUrl,
+      storeLocation: origCtrl.text,
+      storeName: _storeNameController.text.trim(),
+      storePhone: _phoneController.text.trim(),
+      storeTags: 'amala',
+      uid: currentUser.uid,
+    );
+
+    var provider = Provider.of<DataClass>(context, listen: false);
+    await provider.postData(signupBody);
+    if (provider.isBack) {
+      FirebaseFirestore.instance.collection("stores").doc(currentUser.uid).set({
+        "storeUID": currentUser.uid,
+        "storeEmail": currentUser.email,
+        "storeName": _storeNameController.text.trim(),
+        "storePhone": _phoneController.text.trim(),
+        "storeImageUrl": storeImageUrl,
+        "storeLocation": origCtrl.text,
+        "status": "approved",
+        "earnings": 0.00,
+        "lat": double.parse(lat),
+        "lng": double.parse(lng),
+        "category": selectedValue,
+        'position': myLocation.data
       });
-
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        print(await response.stream.bytesToString());
-
-        FirebaseFirestore.instance
-            .collection("stores")
-            .doc(currentUser.uid)
-            .set({
-          "storeUID": currentUser.uid,
-          "storeEmail": currentUser.email,
-          "storeName": _storeNameController.text.trim(),
-          "storePhone": _phoneController.text.trim(),
-          "storeImageUrl": storeImageUrl,
-          "storeLocation": origCtrl.text,
-          "status": "approved",
-          "earnings": 0.00,
-          "lat": double.parse(lat),
-          "lng": double.parse(lng),
-          "category": selectedValue,
-          'position': myLocation.data
-        });
-
-        // save data locally
-        sharedPreferences = await SharedPreferences.getInstance();
-        await sharedPreferences!.setString('uid', currentUser.uid);
-        await sharedPreferences!.setString('email', _emailController.text);
-        await sharedPreferences!.setString('name', _storeNameController.text);
-        await sharedPreferences!.setString('photoUrl', storeImageUrl);
-        await sharedPreferences!.setString('phone', _phoneController.text);
-      } else {
-        print(response.reasonPhrase);
-      }
-
-      // }
-    } catch (e) {
-      print("an error occurred");
-      print(e);
+      // save data locally
+      sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences!.setString('uid', currentUser.uid);
+      await sharedPreferences!.setString('email', _emailController.text);
+      await sharedPreferences!.setString('name', _storeNameController.text);
+      await sharedPreferences!.setString('photoUrl', storeImageUrl);
+      await sharedPreferences!.setString('phone', _phoneController.text);
     }
   }
 
@@ -292,11 +294,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Image.asset('assets/dash_logo_dark.png', width: 150.0),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Text(
                 "Store Registration",
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: Constants.primary_color),
               ),
@@ -308,7 +310,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               },
               child: CircleAvatar(
                 backgroundColor: Colors.grey[300],
-                radius: MediaQuery.of(context).size.width * 0.15,
+                radius: MediaQuery.of(context).size.width * 0.12,
                 backgroundImage: imageXFile == null
                     ? null
                     : FileImage(File(imageXFile!.path)),
@@ -596,3 +598,100 @@ class Terms extends StatelessWidget {
     );
   }
 }
+
+// class PredictionTile extends StatefulWidget {
+//   PredictionTile({Key? key, required this.placePrecidtions}) : super(key: key);
+
+//   final PlacePredictions placePrecidtions;
+
+//   @override
+//   _PredictionTileState createState() => _PredictionTileState();
+// }
+
+// class _PredictionTileState extends State<PredictionTile> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return FlatButton(
+//       padding: EdgeInsets.all(0),
+//       onPressed: () {
+//         getPlaceAddressDetails("${widget.placePrecidtions.place_id}", context);
+//       },
+//       child: Container(
+//         child: Column(
+//           children: [
+//             SizedBox(
+//               width: 10,
+//             ),
+//             Row(
+//               children: [
+//                 Icon(Icons.location_on_outlined),
+//                 SizedBox(
+//                   width: 14,
+//                 ),
+//                 Expanded(
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       SizedBox(
+//                         height: 8,
+//                       ),
+//                       Text(
+//                         "${widget.placePrecidtions.main_text}",
+//                         overflow: TextOverflow.ellipsis,
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           color: Constants.primary_color,
+//                         ),
+//                       ),
+//                       SizedBox(height: 2),
+//                       Text(
+//                         "${widget.placePrecidtions.secondary_text}",
+//                         overflow: TextOverflow.ellipsis,
+//                         style: TextStyle(
+//                           fontSize: 12,
+//                           color: Colors.grey,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             SizedBox(
+//               width: 10,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// void getPlaceAddressDetails(String placeId, context) async {
+//   showDialog(
+//       context: context,
+//       builder: (BuildContext context) =>
+//           ProgressDialog(message: "Please Wait..."));
+//   String placDetailsUrl =
+//       "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
+
+//   var res = await RequestAssistant.getRequest(placDetailsUrl);
+
+//   // Navigator.pop(context);
+
+//   if (res == "failed") {
+//     return;
+//   } else {
+//     if (res['status'] == 'OK') {
+//       Address address = Address();
+
+//       address.placeName = res['result']['name'];
+//       address.placeId = placeId;
+//       address.latitude = res['result']['geometry']['location']['lat'];
+//       address.longitude = res['result']['geometry']['location']['lng'];
+
+//       Provider.of<AppData>(context, listen: false)
+//           .updatePickUpLocationAddress(address);
+//     }
+//   }
+// }

@@ -111,13 +111,13 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: MediaQuery.of(context).size.height * 0.2,
             ),
             Center(
-              child: Image.asset('assets/dash_logo_dark.png', width: 200.0),
+              child: Image.asset('assets/dash_logo_dark.png', width: 150.0),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.06,
+              height: MediaQuery.of(context).size.height * 0.15,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
