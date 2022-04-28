@@ -96,7 +96,6 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => DataClass()),
         ChangeNotifierProvider<StoreModels>(create: (_) => StoreModels()),
-        
         ChangeNotifierProvider(create: (ctx) => StoreProvider()),
         ChangeNotifierProvider(create: (ctx) => ItemCategoryProvider()),
         ChangeNotifierProvider(create: (ctx) => ItemProvider()),

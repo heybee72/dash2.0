@@ -40,9 +40,9 @@ class _StoresState extends State<Stores> {
   getSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? prefCat = prefs.getString('prefCat');
-    String? selected_location = prefs.getString('selected_location');
-    double? selected_lat = prefs.getDouble('selected_lat');
-    double? selected_lng = prefs.getDouble('selected_lng');
+    // String? selected_location = prefs.getString('selected_location');
+    // double? selected_lat = prefs.getDouble('selected_lat');
+    // double? selected_lng = prefs.getDouble('selected_lng');
 
     if (prefCat != null) {
       setState(() {
@@ -69,7 +69,8 @@ class _StoresState extends State<Stores> {
 
     print("selected_lat2: " + selected_lat.toString());
     print("selected_lng2: " + selected_lng.toString());
-    final storeModel = Provider.of<StoreModels>(context)
+    // var storeModel = Provider.of<List<StoreModels>>(context, listen: false);
+    final storeModel = Provider.of<StoreModels>(context, listen: false)
         .fetchAndSetStore(cat: category, lat: selected_lat, lng: selected_lng);
 
     return Scaffold(
@@ -106,7 +107,7 @@ class _StoresState extends State<Stores> {
                                   return const Center(
                                     child: Text("sorry an error occured"),
                                   );
-                                } else  {
+                                } else {
                                   return Consumer<StoreModels>(
                                       builder: (context, storeModel, _) {
                                     print(storeModel.storeModels.length);

@@ -43,10 +43,6 @@ class StoreModels with ChangeNotifier {
     final url = Constants.base_url + '/user/fetchStores/$lat/$lng/$cat';
 
     try {
-      print(fetchStatus);
-      // if (fetchStatus = true) {
-      //   return null;
-      // }
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -54,6 +50,8 @@ class StoreModels with ChangeNotifier {
           "Accept": "application/json",
         },
       );
+
+      _storeModels.clear();
 
       if (response.statusCode == 200) {
         _storeModels.clear();
@@ -79,8 +77,9 @@ class StoreModels with ChangeNotifier {
           ));
         }
         notifyListeners();
-        fetchStatus = true;
       } else if (response.statusCode != 200) {
+        fetchStatus = false;
+
         print("this is the status code");
         print(response.statusCode);
       }
