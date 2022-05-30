@@ -85,34 +85,6 @@ class _ChoosePathState extends State<ChoosePath> {
                 },
               ),
             ),
-            // Container(
-            //   height: 52.0,
-            //   margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
-            //   width: size.width,
-            //   child: OutlinedButton(
-            //     style: OutlinedButton.styleFrom(
-            //       primary: Constants.secondary_color,
-            //       side:
-            //           BorderSide(width: 1.0, color: Constants.secondary_color),
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(6.0),
-            //       ),
-            //     ),
-            //     child: Text(
-            //       "Sign Up",
-            //       style: TextStyle(
-            //         fontSize: 17,
-            //         color: Constants.secondary_color,
-            //         fontWeight: FontWeight.bold,
-            //         fontFamily: 'EuclidCircularB',
-            //       ),
-            //     ),
-            //     onPressed: () {
-            //       // Navigator.of(context).pushNamed(RegisterScreen.routeName);
-            //       Navigator.of(context).pushNamed(GetPhoneNumberScreen.routeName);
-            //     },
-            //   ),
-            // ),
             CustomSizedBox(
               height: 20,
             ),
@@ -162,10 +134,6 @@ class _ChoosePathState extends State<ChoosePath> {
                   ),
                   onTap: () {
                     signInAnon();
-                    // Navigator.of(context)
-                    //     .push(MaterialPageRoute(builder: (context) {
-                    //   return LoginScreen();
-                    // }));
                   },
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:dash_user_app/utils/custom_sized_box.dart';
+import 'package:dash_user_app/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
 class SelectLocation extends StatefulWidget {
@@ -12,16 +13,12 @@ class SelectLocation extends StatefulWidget {
 class _SelectLocationState extends State<SelectLocation> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(73.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+    return Column(
+      children: [
+        SizedBox(
+          height: Dimensions.height20 *6,
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
+        Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
             child: Column(
@@ -57,7 +54,7 @@ class _SelectLocationState extends State<SelectLocation> {
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

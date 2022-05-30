@@ -1,7 +1,5 @@
-
 import 'package:dash_user_app/widgets/category_item.dart';
 import 'package:flutter/material.dart';
-
 
 class ChooseCategory extends StatefulWidget {
   ChooseCategory({Key? key}) : super(key: key);
@@ -39,9 +37,9 @@ class _ChooseCategoryState extends State<ChooseCategory> {
         ),
         centerTitle: true,
       ),
-        body: ListView(padding: EdgeInsets.only(bottom: 16.0),
-            children: <Widget>[
-
+      body: ListView(
+        padding: EdgeInsets.only(bottom: 16.0),
+        children: <Widget>[
           CategoryItem(
             size: size,
             image: 'assets/category_food.jpg',
@@ -57,6 +55,8 @@ class _ChooseCategoryState extends State<ChooseCategory> {
             image: 'assets/category_pharmacy.jpg',
             name: "Pharmacy",
           )
-        ]));
+        ],
+      ),
+    );
   }
 }

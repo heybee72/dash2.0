@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_user_app/global/global.dart';
-import 'package:dash_user_app/new_models/data_class.dart';
-import 'package:dash_user_app/new_models/signup_model.dart';
+import 'package:dash_user_app/model/data_class.dart';
+import 'package:dash_user_app/model/signup_model.dart';
 import 'package:dash_user_app/services/global_methods.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       final User user = _auth.currentUser!;
       final _uid = user.uid;
-      
+
       SignUpBody signupBody = SignUpBody(
         firstName: _firstName.trim(),
         lastName: _lastName.trim(),

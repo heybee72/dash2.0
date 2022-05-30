@@ -1,7 +1,7 @@
 import 'package:alt_sms_autofill/alt_sms_autofill.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_user_app/global/global.dart';
-import 'package:dash_user_app/new_models/signup_model.dart';
+import 'package:dash_user_app/model/signup_model.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -84,6 +84,8 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
                     .get()
                     .then((snapshot) async {
                   if (snapshot.exists) {
+                    print("user exists");
+                    print(snapshot.data());
                     await sharedPreferences!.setString("uid", value.user!.uid);
                     await sharedPreferences!
                         .setString("phone", snapshot.data()!["phoneNumber"]);
@@ -100,7 +102,6 @@ class _VerifyPhoneNumberState extends State<VerifyPhoneNumber> {
                         .setStringList("userCart", userCartList);
                   }
                 });
-               
 
                 Navigator.pushNamed(context, BottomNavScreen.routeName);
               }

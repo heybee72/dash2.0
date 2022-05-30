@@ -4,7 +4,7 @@ import 'package:dash_user_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'home_screen.dart';
-import 'orders_screen.dart';
+// import 'orders_screen.dart';
 
 class BottomNavScreen extends StatefulWidget {
   static const routeName = '/Bottom-nav-screen';
@@ -18,7 +18,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   List _pages = [
     HomeScreen(),
     SearchScreen(),
-    OrdersScreen(index: 0),
+    Container(),
+    // OrdersScreen(index: 0),
     ProfileScreen()
   ];
   int _currentIndex = 0;
