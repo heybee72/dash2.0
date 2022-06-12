@@ -59,7 +59,7 @@ dependencies:
   flutter_countdown_timer: ^4.1.0
   alt_sms_autofill: ^1.0.0
   permission_handler: ^9.2.0
-  flutter_paystack: ^1.0.5+1
+  # flutter_paystack: ^1.0.5+1
   uuid: ^3.0.6
   flutter_spinkit:
   get: ^4.6.1
