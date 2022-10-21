@@ -19,7 +19,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     HomeScreen(),
     SearchScreen(),
     Container(),
-    // OrdersScreen(index: 0),
     ProfileScreen()
   ];
   int _currentIndex = 0;
@@ -28,8 +27,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       _currentIndex = index;
     });
   }
-
-  
 
   @override
   Widget build(BuildContext context) {

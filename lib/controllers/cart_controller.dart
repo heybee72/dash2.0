@@ -16,69 +16,69 @@ class CartController extends GetxController {
   */
   List<CartModel> storageItems = [];
 
-  void addItem(Items item, int quantity) {
+  void addItem(Item item, int quantity) {
     var totalQuantity = 0;
     print(item);
-    if (_items.containsKey(item.id)) {
-      _items.update(int.parse(item.id!), (value) {
-        totalQuantity = value.quantity! + quantity;
+    // if (_items.containsKey(item.items.)) {
+    //   _items.update(int.parse(item.id!), (value) {
+    //     totalQuantity = value.quantity! + quantity;
 
-        return CartModel(
-          id: value.id,
-          price: value.price,
-          name: value.name,
-          img: value.img,
-          isExist: true,
-          quantity: value.quantity! + quantity,
-          time: DateTime.now().toString(),
-          item: item,
-        );
-      });
+    //     return CartModel(
+    //       id: value.id,
+    //       price: value.price,
+    //       name: value.name,
+    //       img: value.img,
+    //       isExist: true,
+    //       quantity: value.quantity! + quantity,
+    //       time: DateTime.now().toString(),
+    //       item: item,
+    //     );
+    //   });
 
-      if (totalQuantity <= 0) {
-        _items.remove(item.id);
-      }
-    } else {
-      if (quantity > 0) {
-        _items.putIfAbsent(int.parse(item.id!), () {
-          return CartModel(
-            id: int.parse(item.id!),
-            name: item.itemName,
-            price: int.parse(item.price!),
-            img: item.itemImage,
-            quantity: quantity,
-            isExist: true,
-            time: DateTime.now().toString(),
-            item: item,
-          );
-        });
-      } else {
-        Get.snackbar("Empty cart", "Please add atleast an item in cart",
-            backgroundColor: AppColors.mainColor, colorText: Colors.white);
-      }
-    }
+    //   if (totalQuantity <= 0) {
+    //     _items.remove(item.id);
+    //   }
+    // } else {
+    //   if (quantity > 0) {
+    //     _items.putIfAbsent(int.parse(item.id!), () {
+    //       return CartModel(
+    //         id: int.parse(item.id!),
+    //         name: item.itemName,
+    //         price: int.parse(item.price!),
+    //         img: item.itemImage,
+    //         quantity: quantity,
+    //         isExist: true,
+    //         time: DateTime.now().toString(),
+    //         item: item,
+    //       );
+    //     });
+    //   } else {
+    //     Get.snackbar("Empty cart", "Please add atleast an item in cart",
+    //         backgroundColor: AppColors.mainColor, colorText: Colors.white);
+    //   }
+    // }
     cartRepo.addToCartList(getItems);
     update();
   }
 
-  bool existInCart(Items item) {
-    if (_items.containsKey(item.id)) {
-      return true;
-    }
-    return false;
-  }
+  // bool existInCart(Item item) {
+  //   if (_items.containsKey(item.id)) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
-  int getQuantity(Items item) {
-    var quantity = 0;
-    if (_items.containsKey(item.id)) {
-      _items.forEach((key, value) {
-        if (key == item.id) {
-          quantity = value.quantity!;
-        }
-      });
-    }
-    return quantity;
-  }
+  // int getQuantity(Items item) {
+  //   var quantity = 0;
+  //   if (_items.containsKey(item.id)) {
+  //     _items.forEach((key, value) {
+  //       if (key == item.id) {
+  //         quantity = value.quantity!;
+  //       }
+  //     });
+  //   }
+  //   return quantity;
+  // }
 
   int get totalItems {
     var totalQuantity = 0;

@@ -2,7 +2,7 @@
 // import 'package:dash_user_app/assistantMethods/total_amount.dart';
 // import 'package:dash_user_app/screens/innerScreens/store_details.dart';
 import 'package:dash_user_app/routes/route_helper.dart';
-import 'package:dash_user_app/screens/store/store_details.dart';
+import 'package:dash_user_app/screens/store/_store_details.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 // import 'models&providers/item_category.dart';
 // import 'models&providers/item.dart';
 // import 'models&providers/store.dart';
+import 'controllers/items_controller.dart';
 import 'controllers/store_controller.dart';
 import 'model/data_class.dart';
 // import 'new_provider/store_provider.dart';
@@ -93,12 +94,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    Get.find<ItemController>();
+    Get.find<StoreController>();
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'EuclidCircularB',
         primaryColor: Constants.primary_color,
-        buttonTheme: ButtonThemeData(
+        buttonTheme: const ButtonThemeData(
           buttonColor: Constants.secondary_color,
           textTheme: ButtonTextTheme.primary,
         ),

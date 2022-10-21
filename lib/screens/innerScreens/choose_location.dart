@@ -1,24 +1,19 @@
 import 'dart:async';
 
 import 'package:dash_user_app/controllers/items_controller.dart';
-import 'package:dash_user_app/controllers/store_controller.dart';
 import 'package:dash_user_app/controllers/store_param_controller.dart';
 import 'package:dash_user_app/utils/app_constants.dart';
-import 'package:dash_user_app/utils/constants.dart';
+
 import 'package:dash_user_app/utils/dimensions.dart';
 import 'package:dash_user_app/widgets/choose_location_small_text.dart';
-import 'package:dash_user_app/widgets/small_text.dart';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
 import 'package:search_map_location/utils/google_search/place.dart';
-import 'package:search_map_location/utils/google_search/place_type.dart';
 import 'package:search_map_location/widget/search_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bottom_nav_screen.dart';
 import 'choose_category.dart';

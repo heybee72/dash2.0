@@ -12,11 +12,13 @@ class ItemController extends GetxController {
 
   late CartController _cart;
 
-  List<dynamic> _itemList = [];
-  List<dynamic> get itemList => _itemList;
+  int _catLength = 0;
+  int get catLength => _catLength;
 
-  List<dynamic> _items = [];
-  List<dynamic> get items => _items;
+  List _itemList = [];
+  List get itemList => _itemList;
+  List _cat = [];
+  List get cat => _cat;
 
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
@@ -32,19 +34,31 @@ class ItemController extends GetxController {
 
   Future<void> getItemList(uid) async {
     _itemList = [];
-    _items = [];
+    _cat = [];
+    _catLength = 0;
+    // _items = [];
     Response response = await itemRepo.getItemList(uid);
 
     if (response.statusCode == 200) {
-      _itemList.addAll(Item.fromJson(response.body).items);
+      _catLength = response.body.length;
+      for (var i = 0; i < response.body.length; i++) {
+        // update();
+        
+        _cat.add(response.body[i]['cat']['title']);
+        _itemList.add(response.body[i]['cat']['content']);
+      }
+ 
+      // for (var j = 0; j < response.body.length; j++) {
+      //   // print(response.body[0]['items'][j]);
+      //   _itemList.add(response.body[j]['items']);
+      //   print("_itemList");
+      //   print(_itemList);
+      // }
 
-      _itemList.forEach((item) {
-        _items.add(Items.fromJson(item.toJson()));
-      });
       _itemFound = true;
       _isLoaded = true;
       update();
-    } else if (items.length == 0) {
+    } else if (_itemList.isEmpty) {
       _itemFound = false;
       _isLoaded = true;
       update();
@@ -84,37 +98,37 @@ class ItemController extends GetxController {
     }
   }
 
-  void initProduct(Items item, CartController cart) {
-    _quantity = 0;
-    _inCartItems = 0;
-    _cart = cart;
-    var exist = false;
-    exist = _cart.existInCart(item);
-    // if exists
-    //  get from storage _inCartItems = 3
+  // void initProduct(Item item, CartController cart) {
+  //   _quantity = 0;
+  //   _inCartItems = 0;
+  //   _cart = cart;
+  //   var exist = false;
+  //   exist = _cart.existInCart(item);
+  //   // if exists
+  //   //  get from storage _inCartItems = 3
 
-    if (exist) {
-      _inCartItems = _cart.getQuantity(item);
-    }
-  }
+  //   if (exist) {
+  //     _inCartItems = _cart.getQuantity(item);
+  //   }
+  // }
 
-  void addItem(Items item) {
-    print("item added");
-    print(item);
-    _cart.addItem(item, _quantity);
-    _quantity = 0;
+  // void addItem(Item item) {
+  //   print("item added");
+  //   print(item);
+  //   _cart.addItem(item, _quantity);
+  //   _quantity = 0;
 
-    _inCartItems = _cart.getQuantity(item);
+  //   _inCartItems = _cart.getQuantity(item);
 
-    _cart.items.forEach((key, value) {
-      print("Item Added" +
-          value.name! +
-          " and the quantity is:" +
-          value.quantity.toString());
-    });
+  //   _cart.items.forEach((key, value) {
+  //     print("Item Added" +
+  //         value.name! +
+  //         " and the quantity is:" +
+  //         value.quantity.toString());
+  //   });
 
-    update();
-  }
+  //   update();
+  // }
 
   int get totalItems {
     return _cart.totalItems;

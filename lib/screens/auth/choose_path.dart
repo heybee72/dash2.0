@@ -39,18 +39,16 @@ class _ChoosePathState extends State<ChoosePath> {
                 ),
               ),
             ),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 60.0, right: 60.0, top: 20, bottom: 110),
-                child: Text(
-                  "Have food, drinks, groceries and more delivered fast",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Constants.grey_color,
-                    fontFamily: 'EuclidCircularB',
-                  ),
+            const Padding(
+              padding: EdgeInsets.only(
+                  left: 60.0, right: 60.0, top: 20, bottom: 110),
+              child: Text(
+                "Have food, drinks, groceries and more delivered fast",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Constants.grey_color,
+                  fontFamily: 'EuclidCircularB',
                 ),
               ),
             ),
@@ -59,18 +57,17 @@ class _ChoosePathState extends State<ChoosePath> {
             ),
             Container(
               height: 52.0,
-              margin: EdgeInsets.only(
+              margin: const EdgeInsets.only(
                   left: 18.0, right: 18.0, top: 16.0, bottom: 8.0),
               width: size.width,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  primary: Constants.secondary_color,
+                  elevation: 0, backgroundColor: Constants.secondary_color,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Login",
                   style: TextStyle(
                     fontSize: 17,
@@ -92,14 +89,14 @@ class _ChoosePathState extends State<ChoosePath> {
               children: [
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 18.0, right: 8.0),
-                    child: Divider(
+                    margin: const EdgeInsets.only(left: 18.0, right: 8.0),
+                    child: const Divider(
                       color: Constants.grey_color,
                       thickness: 1.0,
                     ),
                   ),
                 ),
-                Text(
+                const Text(
                   "or",
                   style: TextStyle(
                     fontSize: 14,
@@ -109,8 +106,8 @@ class _ChoosePathState extends State<ChoosePath> {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 8.0, right: 18.0),
-                    child: Divider(
+                    margin: const EdgeInsets.only(left: 8.0, right: 18.0),
+                    child: const Divider(
                       color: Constants.grey_color,
                       thickness: 1.0,
                     ),
@@ -120,11 +117,12 @@ class _ChoosePathState extends State<ChoosePath> {
             ),
             Container(
               height: 52.0,
-              margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
               width: size.width,
               child: Center(
                 child: InkWell(
-                  child: Text(
+                  child: const Text(
                     "Continue as Guest",
                     style: TextStyle(
                       fontSize: 15,

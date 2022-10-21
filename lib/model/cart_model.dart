@@ -8,7 +8,7 @@ class CartModel {
   int? quantity;
   bool? isExist;
   String? time;
-  Items? item;
+  Item? item;
 
   CartModel(
       {this.id,
@@ -28,7 +28,7 @@ class CartModel {
     quantity = json['quantity'];
     isExist = json['isExist'];
     time = json['time'];
-    item = Items.fromJson(json['item']);
+    item = Item.fromJson(json['item']);
   }
 
   Map<String, dynamic> toJson() {

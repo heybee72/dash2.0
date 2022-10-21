@@ -21,7 +21,7 @@ class _StoreScreenState extends State<StoreScreen> {
     return GetBuilder<StoreController>(
       builder: (stores) {
         return stores.isLoaded == false
-            ? LoaderWidget()
+            ? const LoaderWidget()
             : stores.storeFound == true
                 ? _store(stores)
                 : NoDelivery();
@@ -34,7 +34,7 @@ class _StoreScreenState extends State<StoreScreen> {
       context: context,
       removeTop: true,
       child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: stores.storeList.length,
         itemBuilder: (BuildContext context, int index) {
@@ -44,7 +44,8 @@ class _StoreScreenState extends State<StoreScreen> {
                   index, stores.storeList[index].uid));
             },
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               width: MediaQuery.of(context).size.width,
               height: 150,
               child: ClipRRect(
@@ -69,7 +70,7 @@ class _StoreScreenState extends State<StoreScreen> {
                         child: Text(
                           stores.storeList[index].storeName,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontSize: 18.0),
@@ -85,7 +86,7 @@ class _StoreScreenState extends State<StoreScreen> {
                             children: []),
                       ),
                     ),
-                    Positioned(
+                    const Positioned(
                       bottom: 5.0,
                       right: 10.0,
                       child: Text(

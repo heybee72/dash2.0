@@ -36,7 +36,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
         slivers: <Widget>[
           SliverAppBar(
             leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -44,7 +44,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             ),
             bottom: PreferredSize(
               child: Container(),
-              preferredSize: Size(0, 20),
+              preferredSize: const Size(0, 20),
             ),
             pinned: false,
             expandedHeight: MediaQuery.of(context).size.height * 0.4,
@@ -75,7 +75,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             delegate: SliverChildListDelegate.fixed(
               [
                 Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(10),
                     ),
@@ -87,14 +87,14 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       children: [
                         Text(
                           items['itemName'].toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20.0,
                               color: Constants.primary_color),
                         ),
-                        SizedBox(width: 8.0),
-                        Text("-"),
-                        SizedBox(width: 8.0),
+                        const SizedBox(width: 8.0),
+                        const Text("-"),
+                        const SizedBox(width: 8.0),
                         Wrap(
                           children: [
                             Padding(
@@ -103,7 +103,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                             ),
                             Text(
                               "${items['price'].toString()}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20.0,
                                   color: Constants.primary_color),
@@ -119,7 +119,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   child: Text(
                     items['itemDescription'].toString(),
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Constants.grey_color,
                       fontSize: 15.0,
                     ),
@@ -145,7 +145,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                 //             OutlineInputBorder(borderSide: BorderSide.none)),
                 //   ),
                 // ),
-                SizedBox(
+                const SizedBox(
                   height: 32.0,
                 ),
                 GetBuilder<ItemController>(builder: (controller) {
@@ -160,22 +160,22 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         child: Container(
                           width: 52.0,
                           height: 52.0,
-                          padding: EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                               color: Constants.background_color_2,
                               shape: BoxShape.circle,
                               border:
                                   Border.all(color: Colors.white, width: 0.3)),
-                          child: Icon(Icons.remove, color: Colors.black),
+                          child: const Icon(Icons.remove, color: Colors.black),
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: 39.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 39.0),
                         width: 32.0,
                         child: Text(
                           controller.inCartItems.toString(),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w600,
                               color: Constants.primary_color),
@@ -189,18 +189,18 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         child: Container(
                           width: 52.0,
                           height: 52.0,
-                          padding: EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
                                   color: Colors.black45, width: 0.3)),
-                          child: Icon(Icons.add),
+                          child: const Icon(Icons.add),
                         ),
                       ),
                     ],
                   );
                 }),
-                SizedBox(
+                const SizedBox(
                   height: 48.0,
                 ),
               ],
@@ -211,27 +211,31 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
       bottomNavigationBar: GetBuilder<ItemController>(builder: (controller) {
         return Container(
           height: 60.0,
-          child: FlatButton(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            color: Constants.secondary_color,
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              backgroundColor: Constants.secondary_color,
+            ),
+            // shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            // color: Constants.secondary_color,
+            // padding: const EdgeInsets.symmetric(horizontal: 20.0),
             onPressed: () {
               print(items);
               // controller.addItem(items);
             },
             child: Row(
               children: [
-                Text(
+                const Text(
                   "Add to basket",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       fontSize: 15.0),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8.0,
                 ),
-                ImageIcon(
+                const ImageIcon(
                   AssetImage('assets/basket-outline.png'),
                   size: 15.0,
                   color: Colors.white,
@@ -249,10 +253,10 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                         TextSpan(
                             text:
                                 "${(int.parse(items['price']) * controller.inCartItems).toStringAsFixed(2)}",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 15.0, fontWeight: FontWeight.w600))
                       ],
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15.0,
                           fontWeight: FontWeight.w600)),

@@ -1,4 +1,4 @@
-import 'package:country_code_picker/country_code_picker.dart';
+// import 'package:country_code_picker/country_code_picker.dart';
 import 'package:dash_user_app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,7 @@ class _GetPhoneNumberScreenState extends State<GetPhoneNumberScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Center(
               child: Image.asset('assets/dash_logo_dark.png', width: 250.0),
             ),
@@ -77,63 +77,61 @@ class _GetPhoneNumberScreenState extends State<GetPhoneNumberScreen> {
                         Expanded(
                           flex: 2,
                           child: Container(
-                            margin: EdgeInsets.only(left: 16.0, right: 8.0),
+                            margin: const EdgeInsets.only(left: 16.0, right: 8.0),
                             decoration: BoxDecoration(
-                                color: Color(0XFFF4F4F4),
+                                color: const Color(0XFFF4F4F4),
                                 borderRadius: BorderRadius.circular(5.0)),
-                            child: CountryCodePicker(
-                              padding: EdgeInsets.only(top: 14, bottom: 14),
+                            // child: CountryCodePicker(
+                            //   padding: EdgeInsets.only(top: 14, bottom: 14),
 
-                              onChanged: (CountryCode countryCode) {
-                                phoneIsoCode = countryCode.dialCode!;
-                              },
-                              initialSelection: 'NG',
-                              favorite: ['NG', 'ZA', 'GB', 'US'],
-                              showCountryOnly: false,
-                              showFlag: false,
-                              showOnlyCountryWhenClosed: false,
-                              // optional. aligns the flag and the Text left
-                              alignLeft: false,
-                              textStyle: TextStyle(
-                                  color: Color(0XFF777777),
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.normal),
-                            ),
+                            //   onChanged: (CountryCode countryCode) {
+                            //     phoneIsoCode = countryCode.dialCode!;
+                            //   },
+                            //   initialSelection: 'NG',
+                            //   favorite: ['NG', 'ZA', 'GB', 'US'],
+                            //   showCountryOnly: false,
+                            //   showFlag: false,
+                            //   showOnlyCountryWhenClosed: false,
+                            //   // optional. aligns the flag and the Text left
+                            //   alignLeft: false,
+                            //   textStyle: TextStyle(
+                            //       color: Color(0XFF777777),
+                            //       fontSize: 14.0,
+                            //       fontWeight: FontWeight.normal),
+                            // ),
                           ),
                         ),
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            child: TextFormField(
-                              onSaved: (value) {
-                                _phone = value!;
-                              },
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.phone,
-                              key: ValueKey('phone'),
-                              decoration: InputDecoration(
-                                hintText: 'Phone number',
-                                hintStyle: TextStyle(
-                                    color: Color(0XFF777777), fontSize: 16.0),
-                                filled: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Constants.secondary_color,
-                                      width: 2.0),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
+                          child: TextFormField(
+                            onSaved: (value) {
+                              _phone = value!;
+                            },
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.phone,
+                            key: const ValueKey('phone'),
+                            decoration: const InputDecoration(
+                              hintText: 'Phone number',
+                              hintStyle: TextStyle(
+                                  color: Color(0XFF777777), fontSize: 16.0),
+                              filled: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Constants.secondary_color,
+                                    width: 2.0),
                               ),
-                              validator: (value) {
-                                if (value!.length == 0) {
-                                  return 'Please enter mobile number';
-                                } else if (value.length < 10) {
-                                  return 'Please enter valid mobile number';
-                                }
-                                return null;
-                              },
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
                             ),
+                            validator: (value) {
+                              if (value!.length == 0) {
+                                return 'Please enter mobile number';
+                              } else if (value.length < 10) {
+                                return 'Please enter valid mobile number';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ],
@@ -144,7 +142,7 @@ class _GetPhoneNumberScreenState extends State<GetPhoneNumberScreen> {
                         left: 64.0, right: 64.0, bottom: 10.0, top: 40.0),
                     child: RichText(
                         textAlign: TextAlign.center,
-                        text: TextSpan(
+                        text: const TextSpan(
                             style: TextStyle(
                                 fontSize: 12.0,
                                 color: Color(0XFF777777),
@@ -164,7 +162,7 @@ class _GetPhoneNumberScreenState extends State<GetPhoneNumberScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Container(
                       height: 52.0,
-                      margin: EdgeInsets.only(top: 26.0, bottom: 8.0),
+                      margin: const EdgeInsets.only(top: 26.0, bottom: 8.0),
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -175,12 +173,12 @@ class _GetPhoneNumberScreenState extends State<GetPhoneNumberScreen> {
                           ),
                         ),
                         child: _loading
-                            ? CircularProgressIndicator(
+                            ? const CircularProgressIndicator(
                                 strokeWidth: 2.0,
                                 valueColor:
                                     AlwaysStoppedAnimation<Color>(Colors.white),
                               )
-                            : Text(
+                            : const Text(
                                 "Continue",
                                 style: TextStyle(
                                   fontSize: 17,

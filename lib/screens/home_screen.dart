@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  @override
   void didChangeDependencies() {
     // Theme.of(context)
     super.didChangeDependencies();
@@ -39,96 +40,95 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                      top: Dimensions.height45 + 10,
-                      bottom: Dimensions.height15),
-                  padding: EdgeInsets.only(
-                      left: Dimensions.width20, right: Dimensions.width20),
-                  child: GetBuilder<StoreParamController>(
-                    builder: (param) => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius20 / 2),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                blurRadius: 5,
-                                offset: Offset(0, 5),
-                              ),
-                              BoxShadow(
-                                color: Colors.white,
-                                offset: Offset(-5, 0),
-                              ),
-                              BoxShadow(
-                                color: Colors.white,
-                                offset: Offset(5, 0),
-                              ),
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.white70,
-                              onPrimary: Colors.white,
-                              elevation: 0,
-                            ),
-                            onPressed: () {
-                              // Navigator.of(context)
-                              // .pushNamed(ChooseLocation.routeName);
-                              Get.to(ChooseLocation());
-
-                              // Get.offAllNamed(ChooseLocation.routeName);
-                            },
-                            child: Row(
-                              children: [
-                                SmallText(
-                                  text: param.getParamAddress(),
-                                  color: Colors.black54,
-                                ),
-                                Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Colors.black54,
-                                ),
-                              ],
-                            ),
-                          ),
+      body: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(
+                top: Dimensions.height45 + 10, bottom: Dimensions.height15),
+            padding: EdgeInsets.only(
+                left: Dimensions.width20, right: Dimensions.width20),
+            child: GetBuilder<StoreParamController>(
+              builder: (param) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(Dimensions.radius20 / 2),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 5,
+                          offset: const Offset(0, 5),
                         ),
-                        SizedBox(
-                          width: Dimensions.width20,
+                        const BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(-5, 0),
                         ),
-                        Row(
-                          children: [
-                            SmallText(
-                              text: param.getParamCategory(),
-                              color: Colors.black54,
-                            ),
-                            Icon(
-                              Icons.arrow_drop_down,
-                            ),
-                          ],
+                        const BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(5, 0),
                         ),
                       ],
                     ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white70,
+                        onPrimary: Colors.white,
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        // Navigator.of(context)
+                        // .pushNamed(ChooseLocation.routeName);
+                        Get.to(ChooseLocation());
+
+                        // Get.offAllNamed(ChooseLocation.routeName);
+                      },
+                      child: Row(
+                        children: [
+                          SmallText(
+                            text: param.getParamAddress(),
+                            color: Colors.black54,
+                          ),
+                          const Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.black54,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                GetBuilder<StoreParamController>(
-                  builder: (param) {
-                    if (param.getParamAddress() == "Enter Address") {
-                      return SelectLocation();
-                    }
-                    return Expanded(
-                      child: SingleChildScrollView(child: StoreScreen()),
-                    );
-                  },
-                ),
-              ],
+                  SizedBox(
+                    width: Dimensions.width20,
+                  ),
+                  Row(
+                    children: [
+                      SmallText(
+                        text: param.getParamCategory(),
+                        color: Colors.black54,
+                      ),
+                      const Icon(
+                        Icons.arrow_drop_down,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-    );  
+          ),
+          GetBuilder<StoreParamController>(
+            builder: (param) {
+              if (param.getParamAddress() == "Enter Address") {
+                return SelectLocation();
+              }
+              return Expanded(
+                child: SingleChildScrollView(child: StoreScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

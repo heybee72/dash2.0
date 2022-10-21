@@ -13,6 +13,7 @@ class BigText extends StatelessWidget {
     required this.text,
     this.overFlow = TextOverflow.ellipsis,
     this.size = 0,
+    FontWeight? fontWeight,
   }) : super(key: key);
 
   @override
